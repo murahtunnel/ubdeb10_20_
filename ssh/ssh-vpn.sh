@@ -349,20 +349,17 @@ cat > /etc/issue.net << END
 happy conneting
 
 <p style="text-align: center;">
-    <span style="color: #41A85F; font-size: 26px;"><strong>KLMPK VPN</strong></span>
-    <span style="font-size: 26px;"><strong> </strong></span>
-    <span style="color: #F37934; font-size: 26px;"><strong>PREMIUM</strong></span>
-    <span style="font-size: 26px;">&nbsp;</span>
+    <span style="color: #41A85F; font-size: 26px;"><strong>Murah Tunnel</strong></span>
 </p>
 <p style="text-align: center;">
     <span style="font-family: 'Trebuchet MS', Helvetica, sans-serif;">
-        <span style="color: #E25041; background-color: #61BD6D;">Blitar Jatim</span>
+        <span style="color: #E25041; background-color: #61BD6D;">Bandung Barat</span>
         <span style="background-color: #61BD6D;">&nbsp;</span>
     </span>
 </p>
 <p style="text-align: center;">
     <span style="color: #B8312F;">Telp/WhatsApp</span>:
-    <span style="color: #EFEFEF;">082131861788</span>
+    <span style="color: #EFEFEF;">083197765857</span>
 </p>
 END
 
