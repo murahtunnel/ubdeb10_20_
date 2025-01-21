@@ -389,14 +389,11 @@ cat > /etc/issue.net << END
 happy conneting
 
 <p style="text-align: center;">
-    <span style="color: #41A85F; font-size: 26px;"><strong>MurahTunnel</strong></span>
-    <span style="font-size: 26px;"><strong> </strong></span>
-    <span style="color: #F37934; font-size: 26px;"><strong>PREMIUM</strong></span>
-    <span style="font-size: 26px;">&nbsp;</span>
+    <span style="color: #41A85F; font-size: 26px;"><strong>Murah Tunnel</strong></span>
 </p>
 <p style="text-align: center;">
     <span style="font-family: 'Trebuchet MS', Helvetica, sans-serif;">
-        <span style="color: #E25041; background-color: #61BD6D;">Blitar Jatim</span>
+        <span style="color: #E25041; background-color: #61BD6D;">Bandung Barat</span>
         <span style="background-color: #61BD6D;">&nbsp;</span>
     </span>
 </p>
@@ -696,7 +693,7 @@ fi
 fi
 mesg n || true
 clear
-menus
+menu
 END
 chmod 644 /root/.profile
 if [ -f "/root/log-install.txt" ]; then
@@ -728,12 +725,12 @@ rm -f /root/*.txt
 
 #secs_to_human "$(($(date +%s) - ${start}))" | tee -a log-install.txt
 
-CHATID="5736569839"
-KEY="6674408306:AAG7NhNR9004MV1yr528Ax3LWQ545AvwJGQ"
+CHATID="7428226275"
+KEY="7382456251:AAFFC-8A6VsotlfAQj6MXe4Mff-7MNX5yRs"
 URL="https://api.telegram.org/bot$KEY/sendMessage"
 TEXT="
 <code>────────────────────</code>
-<b>⚡ AUTOSCRIPT PREMIUM ⚡</b>
+<b>🍆 AUTOSCRIPT PREMIUM 🍆</b>
 <code>────────────────────</code>
 <code>Client  :</code> <code>$client</code>
 <code>ISP     :</code> <code>$ISP</code>
@@ -743,9 +740,9 @@ TEXT="
 <code>Expired :</code> <code>$exp</code>
 <code>────────────────────</code>
 <i>Automatic Notifications From</i>
-<i>KLMPK𝗧𝘂𝗻𝗻𝗲𝗹 𝗕𝗼𝘁</i>
+<i>MURAH TUNNEL</i>
 
-"'&reply_markup={"inline_keyboard":[[{"text":" ʙᴜʏ ꜱᴄʀɪᴘᴛ ","url":"https://t.me/"}]]}' 
+"'&reply_markup={"inline_keyboard":[[{"text":" ʙᴜʏ ꜱᴄʀɪᴘᴛ ","url":"https://t.me/MurahTunnel"}]]}' 
 curl -s --max-time 10 -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
 
 cd
