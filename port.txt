@@ -1,3 +1,4 @@
+==============================
 port ssh ntls     : 80
 port ssh tls      : 443
 port dropbear     : 109, 143
@@ -5,15 +6,8 @@ port openssh      : 22, 2222
 port openvpn      : 443, 2200, 1194
 port udp-custom   : 54-65535
 port slowdns      : 53
-noobzvpns tls     : 9443
-noobzvpns ntls    : 8880
+port xray WS      : 80
+port xray TLS     : 443
 proxy squid       : 3128
 badvpn udpgw      : 7100 - 7300
-port vmess ntls   : 80
-port vmess tls    : 443
-port vless ntls   : 80
-port vless tls    : 443
-port trojan ntls  : 80
-port trojan tls   : 443
-port s-socks ntls : 80
-port s-socks tls  : 443
+==============================
