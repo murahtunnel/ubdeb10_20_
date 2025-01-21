@@ -1,0 +1,776 @@
+#!/bin/bash
+
+rm -f $0
+
+apt update
+apt install curl -y
+apt install wget -y
+apt install jq -y
+
+NC='\033[0m'
+rbg='\033[41;37m'
+r='\033[1;91m'
+g='\033[1;92m'
+y='\033[1;93m'
+u='\033[0;35m'
+c='\033[0;96m'
+w='\033[1;97m'
+
+if [ "${EUID}" -ne 0 ]; then
+echo "${r}You need to run this script as root${NC}"
+sleep 2
+exit 0
+fi
+
+if [[ ! -f /root/.isp ]]; then
+curl -sS ipinfo.io/org?token=7a814b6263b02c > /root/.isp
+fi
+if [[ ! -f /root/.city ]]; then
+curl -sS ipinfo.io/city?token=7a814b6263b02c > /root/.city
+fi
+if [[ ! -f /root/.myip ]]; then
+curl -sS ipv4.icanhazip.com > /root/.myip
+fi
+
+export IP=$(cat /root/.myip);
+export ISP=$(cat /root/.isp);
+export CITY=$(cat /root/.city);
+source /etc/os-release
+
+function lane_atas() {
+echo -e "${c}┌──────────────────────────────────────────┐${NC}"
+}
+function lane_bawah() {
+echo -e "${c}└──────────────────────────────────────────┘${NC}"
+}
+
+apt update
+data_server=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
+date_list=$(date +"%Y-%m-%d" -d "$data_server")
+url_izin="https://raw.githubusercontent.com/murahtunnel/vps_access/main/ip"
+client=$(curl -sS $url_izin | grep $IP | awk '{print $2}')
+exp=$(curl -sS $url_izin | grep $IP | awk '{print $3}')
+today=`date -d "0 days" +"%Y-%m-%d"`
+time=$(printf '%(%H:%M:%S)T')
+date=$(date +'%d-%m-%Y')
+d1=$(date -d "$exp" +%s)
+d2=$(date -d "$today" +%s)
+certifacate=$(((d1 - d2) / 86400))
+checking_sc() {
+  useexp=$(curl -s $url_izin | grep $IP | awk '{print $3}')
+  if [[ $date_list < $useexp ]]; then
+    echo -ne
+  else
+    clear
+    echo -e "\033[96m────────────────────────────────────────────\033[0m"
+    echo -e "\033[41;37m             Expired Autoscript             \033[0m"
+    echo -e "\033[96m────────────────────────────────────────────\033[0m"
+    echo -e ""
+    echo -e " \033[31mIP Address access is not allowed\033[0m"
+    echo -e ""
+    echo -e "  Price For 1 Month"
+    echo -e ""
+    echo -e "   1 IP Address : 8.000 Rp"
+    echo -e "   5 IP Address : 30.000 Rp"
+    echo -e "   10 IP Address : 50.000 Rp"
+    echo -e "   Unli IP Address : 150.000 Rp"
+    echo -e "   open source/script jadi hak milik : 300.000 Rp"       
+    echo -e ""
+    echo -e ""
+    echo -e " \033[34mWhatsapp  : +6283197765857 \033[0m"
+    echo -e "\033[96m────────────────────────────────────────────\033[0m"
+    exit 0
+  fi
+}
+checking_sc
+
+if [[ "$( uname -m | awk '{print $1}' )" == "x86_64" ]]; then
+    echo -ne
+else
+    echo -e "${r} Your Architecture Is Not Supported ( ${y}$( uname -m )${NC} )"
+    exit 1
+fi
+
+if [[ ${ID} == "ubuntu" || ${ID} == "debian" ]]; then
+    echo -ne
+else
+    echo -e " ${r}This Script only Support for OS"
+    echo -e ""
+    echo -e " - ${y}Ubuntu 20.04${NC}"
+    echo -e " - ${y}Ubuntu 21.04${NC}"
+    echo -e " - ${y}Ubuntu 22.04${NC}"
+    echo -e " - ${y}Ubuntu 23.04${NC}"
+    echo -e " - ${y}Ubuntu 24.04${NC}"
+    echo ""
+    echo -e " - ${y}Debian 10${NC}"
+    echo -e " - ${y}Debian 11${NC}"
+    echo -e " - ${y}Debian 12${NC}"
+    Credit_Sc
+    exit 0
+fi
+
+if [[ ${VERSION_ID} == "10" || ${VERSION_ID} == "11" || ${VERSION_ID} == "12" || ${VERSION_ID} == "20.04" || ${VERSION_ID} == "21.04" || ${VERSION_ID} == "22.04" || ${VERSION_ID} == "23.04" || ${VERSION_ID} == "24.04" ]]; then
+    echo -ne
+else
+    echo -e " ${r}This Script only Support for OS"
+    echo -e ""
+    echo -e " - ${y}Ubuntu 20.04${NC}"
+    echo -e " - ${y}Ubuntu 21.04${NC}"
+    echo -e " - ${y}Ubuntu 22.04${NC}"
+    echo -e " - ${y}Ubuntu 23.04${NC}"
+    echo -e " - ${y}Ubuntu 24.04${NC}"
+    echo ""
+    echo -e " - ${y}Debian 10${NC}"
+    echo -e " - ${y}Debian 11${NC}"
+    echo -e " - ${y}Debian 12${NC}"
+    Credit_Sc
+    exit 0
+fi
+
+if [ "$(systemd-detect-virt)" == "openvz" ]; then
+echo "OpenVZ is not supported"
+exit 1
+fi
+
+function generate_random_subdomain() {
+
+    sub=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
+}
+
+function pointing() {
+
+    if [ -f /etc/xray/domain ] && [ -s /etc/xray/domain ]; then
+        echo "Domain sudah ada, melewati proses pointing."
+        return
+    fi
+
+    apt update
+    apt install jq curl -y
+    DOMAIN=klmpk.my.id
+    generate_random_subdomain
+    dns=${sub}.${DOMAIN}
+    CF_KEY=9d25535086484fb695ab64a70a70532a32fd4
+    CF_ID=andyyuda41@gmail.com
+    set -euo pipefail
+    echo ""
+    echo "Proses Pointing Domain ${dns}..."
+    sleep 1
+    ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
+         -H "X-Auth-Email: ${CF_ID}" \
+         -H "X-Auth-Key: ${CF_KEY}" \
+         -H "Content-Type: application/json" | jq -r .result[0].id)
+
+    RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${dns}" \
+         -H "X-Auth-Email: ${CF_ID}" \
+         -H "X-Auth-Key: ${CF_KEY}" \
+         -H "Content-Type: application/json" | jq -r .result[0].id)
+
+    if [[ "${#RECORD}" -le 10 ]]; then
+         RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+         -H "X-Auth-Email: ${CF_ID}" \
+         -H "X-Auth-Key: ${CF_KEY}" \
+         -H "Content-Type: application/json" \
+         --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":true}' | jq -r .result.id)
+    fi
+
+    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+         -H "X-Auth-Email: ${CF_ID}" \
+         -H "X-Auth-Key: ${CF_KEY}" \
+         -H "Content-Type: application/json" \
+         --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":true}')
+
+    # Menyimpan domain ke /etc/xray/domain hanya jika tidak ada
+    echo "$dns" > /etc/xray/domain
+    echo ""
+    sleep 1
+    echo -e "Subdomain kamu adalah ${dns}"
+    cd
+    sleep 2
+}
+
+function pasang_domain_otomatis() {
+    # Membuat direktori yang diperlukan
+    mkdir -p /etc/xray
+    mkdir -p /var/lib/LT/ >/dev/null 2>&1
+    echo "IP=" >> /var/lib/LT/ipvps.conf
+    touch /etc/.{ssh,vmess,vless,trojan,shadowsocks}.db
+    mkdir -p /etc/{xray,bot,vmess,vless,trojan,shadowsocks,ssh,limit,usr}
+    touch /etc/noobzvpns/users.json
+    mkdir -p /etc/xray/limit
+    mkdir -p /etc/xray/limit/{ssh,vmess,vless,trojan,shadowsocks}
+    mkdir -p /etc/lunatic/vmess/ip
+    mkdir -p /etc/lunatic/vless/ip
+    mkdir -p /etc/lunatic/trojan/ip
+    mkdir -p /etc/lunatic/ssh/ip
+
+# limit quota xray   
+    mkdir -p /etc/lunatic/vmess/usage
+    mkdir -p /etc/lunatic/vless/usage
+    mkdir -p /etc/lunatic/trojan/usage
+
+# detail account
+
+    mkdir -p /etc/lunatic/vmess/detail
+    mkdir -p /etc/lunatic/vless/detail
+    mkdir -p /etc/lunatic/trojan/detail
+    mkdir -p /etc/lunatic/ssh/detail
+
+# dir xray limit                
+    mkdir -p /etc/limit/vmess
+    mkdir -p /etc/limit/vless
+    mkdir -p /etc/limit/trojan
+    mkdir -p /etc/limit/ssh
+
+    
+    mkdir -p /etc/vmess
+    mkdir -p /etc/vless
+    mkdir -p /etc/trojan
+    mkdir -p /etc/shadowsocks
+    mkdir -p /etc/ssh
+    touch /etc/lunatic/vmess/.vmess.db
+    touch /etc/lunatic/vless/.vless.db
+    touch /etc/lunatic/trojan/.trojan.db
+    touch /etc/lunatic/shadowsocks/.shadowsocks.db
+    touch /etc/lunatic/ssh/.ssh.db
+    touch /etc/lunatic/bot/.bot.db
+    echo "& plughin Account" >>/etc/lunatic/vmess/.vmess.db
+    echo "& plughin Account" >>/etc/lunatic/vless/.vless.db
+    echo "& plughin Account" >>/etc/lunatic/trojan/.trojan.db
+    echo "& plughin Account" >>/etc/lunatic/shadowsocks/.shadowsocks.db
+    echo "& plughin Account" >>/etc/lunatic/ssh/.ssh.db
+
+    # Menjalankan fungsi pointing
+    pointing
+}
+
+pasang_domain_otomatis
+
+function Dependencies() {
+cd
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/tools.sh &> /dev/null
+chmod +x tools.sh 
+bash tools.sh
+sudo apt install at -y >/dev/null 2>&1
+
+wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/port.txt"
+
+clear
+start=$(date +%s)
+ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+apt install git curl -y >/dev/null 2>&1
+apt install python -y >/dev/null 2>&1
+}
+
+function Installasi(){
+animation_loading() {
+    CMD[0]="$1"
+    CMD[1]="$2"
+    
+    (
+        # Hapus file fim jika ada
+        [[ -e $HOME/fim ]] && rm -f $HOME/fim
+        
+        # Jalankan perintah di background dan sembunyikan output
+        ${CMD[0]} -y >/dev/null 2>&1
+        ${CMD[1]} -y >/dev/null 2>&1
+        
+        # Buat file fim untuk menandakan selesai
+        touch $HOME/fim
+    ) >/dev/null 2>&1 &
+
+    tput civis # Sembunyikan kursor
+    echo -ne "  \033[0;33mProcessed Install \033[1;37m- \033[0;33m["
+    
+    while true; do
+        for ((i = 0; i < 18; i++)); do
+            echo -ne "\033[0;32m#"
+            sleep 0.1
+        done
+        
+        # Jika file fim ada, hapus dan keluar dari loop
+        if [[ -e $HOME/fim ]]; then
+            rm -f $HOME/fim
+            break
+        fi
+        
+        echo -e "\033[0;33m]"
+        sleep 1
+        tput cuu1 # Kembali ke baris sebelumnya
+        tput dl1   # Hapus baris sebelumnya
+        echo -ne "  \033[0;33mProcessed Install \033[1;37m- \033[0;33m["
+    done
+    
+    echo -e "\033[0;33m]\033[1;37m -\033[1;32m Succes !\033[1;37m"
+    tput cnorm # Tampilkan kursor kembali
+}
+
+
+inssh() {
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ssh/ssh-vpn.sh && chmod +x ssh-vpn.sh && ./ssh-vpn.sh
+
+# installer gotop
+gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
+gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/gotop_v"$gotop_latest"_linux_amd64.deb"
+curl -sL "$gotop_link" -o /tmp/gotop.deb
+dpkg -i /tmp/gotop.deb
+
+clear
+} 
+
+insxray() {
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/xray/ins-xray.sh && chmod +x ins-xray.sh && ./ins-xray.sh
+clear
+wget https://raw.githubusercontent.com/Andyyuda/vip/main/limit/limit.sh && chmod +x limit.sh && ./limit.sh
+clear
+wget -q -O /usr/bin/limit-ip "https://raw.githubusercontent.com/Andyyuda/vip/main/limit/limit-ip"
+chmod +x /usr/bin/*
+cd /usr/bin
+sed -i 's/\r//' limit-ip
+cd
+clear
+#SERVICE LIMIT ALL IP
+cat >/etc/systemd/system/vmip.service << EOF
+[Unit]
+Description=My
+ProjectAfter=network.target
+
+[Service]
+WorkingDirectory=/root
+ExecStart=/usr/bin/limit-ip vmip
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl restart vmip
+systemctl enable vmip
+
+cat >/etc/systemd/system/vlip.service << EOF
+[Unit]
+Description=My
+ProjectAfter=network.target
+
+[Service]
+WorkingDirectory=/root
+ExecStart=/usr/bin/limit-ip vlip
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl restart vlip
+systemctl enable vlip
+
+cat >/etc/systemd/system/trip.service << EOF
+[Unit]
+Description=My
+ProjectAfter=network.target
+
+[Service]
+WorkingDirectory=/root
+ExecStart=/usr/bin/limit-ip trip
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl restart trip
+systemctl enable trip
+
+}
+
+insws() {
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/install-ws.sh && chmod +x install-ws.sh && ./install-ws.sh
+clear
+cat > /etc/issue.net << END
+happy conneting
+
+<p style="text-align: center;">
+    <span style="color: #41A85F; font-size: 26px;"><strong>MurahTunnel</strong></span>
+    <span style="font-size: 26px;"><strong> </strong></span>
+    <span style="color: #F37934; font-size: 26px;"><strong>PREMIUM</strong></span>
+    <span style="font-size: 26px;">&nbsp;</span>
+</p>
+<p style="text-align: center;">
+    <span style="font-family: 'Trebuchet MS', Helvetica, sans-serif;">
+        <span style="color: #E25041; background-color: #61BD6D;">Blitar Jatim</span>
+        <span style="background-color: #61BD6D;">&nbsp;</span>
+    </span>
+</p>
+<p style="text-align: center;">
+    <span style="color: #B8312F;">Telp/WhatsApp</span>:
+    <span style="color: #EFEFEF;">083197765857</span>
+</p>
+END
+clear
+}
+
+insbkp() {
+apt install rclone
+printf "q\n" | rclone config
+wget -O /root/.config/rclone/rclone.conf "https://github.com/Andyyuda/vip/raw/main/limit/rclone.conf"
+git clone  https://github.com/zhets/wondershaper.git
+cd wondershaper
+make install
+cd
+rm -rf wondershaper
+    
+rm -f /root/set-br.sh
+rm -f /root/limit.sh
+}
+
+insohp() {
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/ohp.sh && chmod +x ohp.sh && ./ohp.sh
+clear
+}
+
+menu() {
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/menu/update.sh && chmod +x update.sh && ./update.sh
+clear
+}
+
+insdns() {
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/slowdns/installsl.sh && chmod +x installsl.sh && bash installsl.sh
+clear
+}
+
+insudp() {
+
+cd
+mkdir -p /etc/udp
+
+wget -q --show-progress --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1_VyhL5BILtoZZTW4rhnUiYzc4zHOsXQ8' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1_VyhL5BILtoZZTW4rhnUiYzc4zHOsXQ8" -O /etc/udp/udp-custom && rm -rf /tmp/cookies.txt
+chmod +x /etc/udp/udp-custom
+
+wget -q --show-progress --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1_XNXsufQXzcTUVVKQoBeX5Ig0J7GngGM' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1_XNXsufQXzcTUVVKQoBeX5Ig0J7GngGM" -O /etc/udp/config.json && rm -rf /tmp/cookies.txt
+chmod 644 /etc/udp/config.json
+
+if [ -z "$1" ]; then
+cat <<EOF > /etc/systemd/system/udp-custom.service
+[Unit]
+Description=UDP Custom by ePro Dev. Team
+
+[Service]
+User=root
+Type=simple
+ExecStart=/etc/udp/udp-custom server
+WorkingDirectory=/etc/udp/
+Restart=always
+RestartSec=2s
+
+[Install]
+WantedBy=default.target
+EOF
+else
+cat <<EOF > /etc/systemd/system/udp-custom.service
+[Unit]
+Description=UDP Custom by ePro Dev. Team
+
+[Service]
+User=root
+Type=simple
+ExecStart=/etc/udp/udp-custom server -exclude $1
+WorkingDirectory=/etc/udp/
+Restart=always
+RestartSec=2s
+
+[Install]
+WantedBy=default.target
+EOF
+fi
+
+systemctl restart udp-custom
+systemctl enable udp-custom
+
+clear
+}
+
+insnoob() {
+# Buat Direktori
+mkdir -p /etc/noobzvpns
+
+# Bersihkan layar
+clear
+
+# Buat file konfigurasi JSON
+cat > /etc/noobzvpns/config.json <<-JSON
+{
+	"tcp_std": [
+		8080
+	],
+	"tcp_ssl": [
+		8443
+	],
+	"ssl_cert": "/etc/noobzvpns/cert.pem",
+	"ssl_key": "/etc/noobzvpns/key.pem",
+	"ssl_version": "AUTO",
+	"conn_timeout": 60,
+	"dns_resolver": "/etc/resolv.conf",
+	"http_ok": "HTTP/1.1 101 Switching Protocols[crlf]Upgrade: websocket[crlf][crlf]"
+}
+JSON
+# Port dari tcp_std & tcp_ssl dapat diubah sesuai kebutuhan agar tidak bentrok dengan layanan lain di VPS
+
+# Unduh file yang diperlukan
+#wget -q -O /usr/bin/noobzvpns "https://github.com/noobz-id/noobzvpns/raw/master/noobzvpns.x86_64"
+#wget -q -O /etc/noobzvpns/cert.pem "https://github.com/noobz-id/noobzvpns/raw/master/cert.pem"
+#wget -q -O /etc/noobzvpns/key.pem "https://github.com/noobz-id/noobzvpns/raw/master/key.pem"
+
+# Berikan izin eksekusi pada file
+#chmod +x /usr/bin/noobzvpns
+#chmod 600 /etc/noobzvpns/cert.pem /etc/noobzvpns/key.pem
+
+# Unduh service file dan konfigurasi
+#wget -q -O /etc/systemd/system/noobzvpns.service "https://github.com/noobz-id/noobzvpns/raw/master/noobzvpns.service"
+
+# Enable dan mulai layanan
+#systemctl enable noobzvpns
+#systemctl start noobzvpns
+
+clear
+}
+if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
+echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
+setup_ubuntu
+elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
+echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
+setup_debian
+else
+echo -e " Your OS Is Not Supported ( ${YELLOW}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${FONT} )"
+fi
+}
+
+
+function setup_debian(){
+lane_atas
+echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
+lane_bawah
+animation_loading 'inssh'
+
+lane_atas
+echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
+lane_bawah
+animation_loading 'insxray'
+
+lane_atas
+echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
+lane_bawah
+animation_loading 'insws'
+
+lane_atas
+echo -e "${c}│       ${g}PROCESS INSTALLED BACKUP MENU${NC}${c}      │${NC}"
+lane_bawah
+animation_loading 'insbkp'
+
+lane_atas
+echo -e "${c}│           ${g}PROCESS INSTALLED OHP${NC}${c}          │${NC}"
+lane_bawah
+animation_loading 'insohp'
+
+lane_atas
+echo -e "${c}│           ${g}DOWNLOAD EXTRA MENU${NC}${c}            │${NC}"
+lane_bawah
+animation_loading 'menu'
+
+lane_atas
+echo -e "${c}│           ${g}DOWNLOAD SYSTEM${NC}${c}                │${NC}"
+lane_bawah
+animation_loading 'insdns'
+
+lane_atas
+echo -e "${c}│           ${g}DOWNLOAD UDP CUSTOM${NC}${c}            │${NC}"
+lane_bawah
+animation_loading 'insudp'
+
+}
+
+function setup_ubuntu(){
+lane_atas
+echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
+lane_bawah
+inssh
+
+lane_atas
+echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
+lane_bawah
+insxray
+
+lane_atas
+echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
+lane_bawah
+insws
+
+lane_atas
+echo -e "${c}│       ${g}PROCESS INSTALLED BACKUP MENU${NC}${c}      │${NC}"
+lane_bawah
+insbkp
+
+lane_atas
+echo -e "${c}│           ${g}PROCESS INSTALLED OHP${NC}${c}          │${NC}"
+lane_bawah
+insohp
+
+lane_atas
+echo -e "${c}│           ${g}DOWNLOAD EXTRA MENU${NC}${c}            │${NC}"
+lane_bawah
+menu
+
+lane_atas
+echo -e "${c}│           ${g}DOWNLOAD SYSTEM${NC}${c}                │${NC}"
+lane_bawah
+insdns
+
+lane_atas
+echo -e "${c}│           ${g}DOWNLOAD UDP CUSTOM${NC}${c}            │${NC}"
+lane_bawah
+insudp
+
+}
+
+# Tentukan nilai baru yang diinginkan untuk fs.file-max
+NEW_FILE_MAX=65535  # Ubah sesuai kebutuhan Anda
+
+# Nilai tambahan untuk konfigurasi netfilter
+NF_CONNTRACK_MAX="net.netfilter.nf_conntrack_max=262144"
+NF_CONNTRACK_TIMEOUT="net.netfilter.nf_conntrack_tcp_timeout_time_wait=30"
+
+# File yang akan diedit
+SYSCTL_CONF="/etc/sysctl.conf"
+
+# Ambil nilai fs.file-max saat ini
+CURRENT_FILE_MAX=$(grep "^fs.file-max" "$SYSCTL_CONF" | awk '{print $3}' 2>/dev/null)
+
+# Cek apakah nilai fs.file-max sudah sesuai
+if [ "$CURRENT_FILE_MAX" != "$NEW_FILE_MAX" ]; then
+    # Cek apakah fs.file-max sudah ada di file
+    if grep -q "^fs.file-max" "$SYSCTL_CONF"; then
+        # Jika ada, ubah nilainya
+        sed -i "s/^fs.file-max.*/fs.file-max = $NEW_FILE_MAX/" "$SYSCTL_CONF" >/dev/null 2>&1
+    else
+        # Jika tidak ada, tambahkan baris baru
+        echo "fs.file-max = $NEW_FILE_MAX" >> "$SYSCTL_CONF" 2>/dev/null
+    fi
+fi
+
+# Cek apakah net.netfilter.nf_conntrack_max sudah ada
+if ! grep -q "^net.netfilter.nf_conntrack_max" "$SYSCTL_CONF"; then
+    echo "$NF_CONNTRACK_MAX" >> "$SYSCTL_CONF" 2>/dev/null
+fi
+
+# Cek apakah net.netfilter.nf_conntrack_tcp_timeout_time_wait sudah ada
+if ! grep -q "^net.netfilter.nf_conntrack_tcp_timeout_time_wait" "$SYSCTL_CONF"; then
+    echo "$NF_CONNTRACK_TIMEOUT" >> "$SYSCTL_CONF" 2>/dev/null
+fi
+
+# Terapkan perubahan
+sysctl -p >/dev/null 2>&1
+
+pasang_domain
+Dependencies
+Installasi
+
+    cat >/etc/cron.d/xp_all <<-END
+		SHELL=/bin/sh
+		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+		2 0 * * * root /usr/bin/xp
+	END
+    cat >/etc/cron.d/logclean <<-END
+		SHELL=/bin/sh
+		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+		*/59 * * * * root /usr/bin/logclean
+	END
+	    cat >/etc/cron.d/daily_reboot <<-END
+		SHELL=/bin/sh
+		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+		0 5 * * * /sbin/reboot
+	END
+
+cat> /root/.profile << END
+if [ "$BASH" ]; then
+if [ -f ~/.bashrc ]; then
+. ~/.bashrc
+fi
+fi
+mesg n || true
+clear
+menus
+END
+chmod 644 /root/.profile
+if [ -f "/root/log-install.txt" ]; then
+rm /root/log-install.txt > /dev/null 2>&1
+fi
+if [ -f "/etc/afak.conf" ]; then
+rm /etc/afak.conf > /dev/null 2>&1
+fi
+history -c
+serverV=$( curl -sS https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/versi  )
+echo $serverV > /root/.versi
+echo "00" > /home/daily_reboot
+aureb=$(cat /home/daily_reboot)
+b=11
+if [ $aureb -gt $b ]
+then
+gg="PM"
+else
+gg="AM"
+fi
+cd
+
+curl -sS ifconfig.me > /etc/myipvps
+curl -s ipinfo.io/city?token=75082b4831f909 >> /etc/xray/city
+curl -s ipinfo.io/org?token=75082b4831f909  | cut -d " " -f 2-10 >> /etc/xray/isp
+
+rm -f /root/*.sh
+rm -f /root/*.txt
+
+#secs_to_human "$(($(date +%s) - ${start}))" | tee -a log-install.txt
+
+CHATID="5736569839"
+KEY="6674408306:AAG7NhNR9004MV1yr528Ax3LWQ545AvwJGQ"
+URL="https://api.telegram.org/bot$KEY/sendMessage"
+TEXT="
+<code>────────────────────</code>
+<b>⚡ AUTOSCRIPT PREMIUM ⚡</b>
+<code>────────────────────</code>
+<code>Client  :</code> <code>$client</code>
+<code>ISP     :</code> <code>$ISP</code>
+<code>Country :</code> <code>$CITY</code>
+<code>DATE    :</code> <code>$date</code>
+<code>Time    :</code> <code>$time</code>
+<code>Expired :</code> <code>$exp</code>
+<code>────────────────────</code>
+<i>Automatic Notifications From</i>
+<i>KLMPK𝗧𝘂𝗻𝗻𝗲𝗹 𝗕𝗼𝘁</i>
+
+"'&reply_markup={"inline_keyboard":[[{"text":" ʙᴜʏ ꜱᴄʀɪᴘᴛ ","url":"https://t.me/"}]]}' 
+curl -s --max-time 10 -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+
+cd
+rm ~/.bash_history
+rm -f openvpn
+rm -f key.pem
+rm -f cert.pem
+
+sleep 3
+echo  ""
+cd
+clear
+echo -e "${c}┌────────────────────────────────────────────┐${NC}"
+echo -e "${c}│  ${g}INSTALL SCRIPT SELESAI..${NC}                  ${c}│${NC}"
+echo -e "${c}└────────────────────────────────────────────┘${NC}"
+echo  ""
+sleep 4
+# Menghapus bagian pilihan reboot
+# echo -e "[ ${yell}WARNING${NC} ] Do you want to reboot now ? (y/n)? "
+# read answer
+# if [ "$answer" == "${answer#[Yy]}" ] ;then
+# exit 0
+# else
+# reboot
+# fi
+
+# Langsung melakukan reboot tanpa konfirmasi
+reboot
