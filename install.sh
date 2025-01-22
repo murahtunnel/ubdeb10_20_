@@ -62,18 +62,35 @@ checking_sc() {
     echo -ne
   else
     clear
-    echo -e "\033[96m────────────────────────────────────────────\033[0m"
-    echo -e "\033[44;37m             Expired Autoscript             \033[0m"
-    echo -e "\033[96m────────────────────────────────────────────\033[0m"
+    echo -e "\033[96m============================================\033[0m"
+    echo -e "\033[44;37m           NotAllowed Autoscript            \033[0m"    
+    echo -e "\033[96m============================================\033[0m"
     echo -e "\e[95;1m buy / sewa AutoScript installer VPS \e[0m"
-    echo -e "\e[96;1m   1 IP        : 10.000  Rp \e[0m"
-    echo -e "\e[96;1m   2 IP        : 15.000  Rp \e[0m"   
-    echo -e "\e[96;1m   7 IP        : 40.000  Rp \e[0m"
-    echo -e "\e[96;1m   Unli IP     : 150.000 Rp \e[0m"
-    echo -e "\e[97;1m   open source : 400.000 Rp \e[0m"       
+    echo -e "\033[96m============================================\033[0m"
+    echo -e "\e[93;1m
+    Support All OS : 
+    ubuntu 20,22,24
+    debian 10,11,12 \e[0m"
+    echo -e "\033[96m============================================\033[0m"    
+    echo -e "\e[92;1m
+    full fitur :
+    autokill,autolock SSH X-Ray
+    limit-IP,limit-BW SSH X-ray
+    change-UUID (husus xray)
+    Rebuild-VPS,
+    monitor-VPS,monitor-USER
+    backup-DATA,restore-DATA
+    Scripts-ENCRYPT,scripts-DECRYPT
+    masih banyak Lagi..\e[0m"
+    echo -e "\033[96m============================================\033[0m"    
+    echo -e "\e[96;1m   1 IP        : Rp.10.000   \e[0m"
+    echo -e "\e[96;1m   2 IP        : Rp.15.000   \e[0m"   
+    echo -e "\e[96;1m   7 IP        : Rp.40.000   \e[0m"
+    echo -e "\e[96;1m   Unli IP     : Rp.150.000  \e[0m"
+    echo -e "\e[97;1m   open source : Rp.400.000  \e[0m"       
     echo -e ""
     echo -e "\033[34m Contack WA/TLP: 083197765857 \033[0m"
-    echo -e "\033[96m────────────────────────────────────────────\033[0m"
+    echo -e "\033[96m============================================\033[0m"
     exit 0
   fi
 }
@@ -231,12 +248,12 @@ pointingdomain
 # install dependencies
 function Dependencies() {
 cd
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/tools.sh &> /dev/null
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh &> /dev/null
 chmod +x tools.sh 
 bash tools.sh
 sudo apt install at -y >/dev/null 2>&1
 
-wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/port.txt"
+wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
 
 clear
 start=$(date +%s)
@@ -289,7 +306,7 @@ animation_loading() {
 }
 
 
-inssh() {
+INSTALL_SSH() {
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ssh/ssh-vpn.sh && chmod +x ssh-vpn.sh && ./ssh-vpn.sh
 
 # installer gotop
@@ -301,99 +318,35 @@ dpkg -i /tmp/gotop.deb
 clear
 } 
 
-insxray() {
+INSTALL_XRAY() {
+
+# install semua kebutuhan xray
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/xray/ins-xray.sh && chmod +x ins-xray.sh && ./ins-xray.sh
 clear
-wget https://raw.githubusercontent.com/Andyyuda/vip/main/limit/limit.sh && chmod +x limit.sh && ./limit.sh
+
+# limit quota & service xray
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/Xbw_LIMIT/install.sh && chmod +x install.sh && ./install.sh
 clear
-wget -q -O /usr/bin/limit-ip "https://raw.githubusercontent.com/Andyyuda/vip/main/limit/limit-ip"
-chmod +x /usr/bin/*
-cd /usr/bin
-sed -i 's/\r//' limit-ip
-cd
+
+# limit service ip xray
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/AUTOKILL_SERVICE/service.sh && chmod +x service.sh && ./service.sh
 clear
-#SERVICE LIMIT ALL IP
-cat >/etc/systemd/system/vmip.service << EOF
-[Unit]
-Description=My
-ProjectAfter=network.target
-
-[Service]
-WorkingDirectory=/root
-ExecStart=/usr/bin/limit-ip vmip
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
-systemctl daemon-reload
-systemctl restart vmip
-systemctl enable vmip
-
-cat >/etc/systemd/system/vlip.service << EOF
-[Unit]
-Description=My
-ProjectAfter=network.target
-
-[Service]
-WorkingDirectory=/root
-ExecStart=/usr/bin/limit-ip vlip
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
-systemctl daemon-reload
-systemctl restart vlip
-systemctl enable vlip
-
-cat >/etc/systemd/system/trip.service << EOF
-[Unit]
-Description=My
-ProjectAfter=network.target
-
-[Service]
-WorkingDirectory=/root
-ExecStart=/usr/bin/limit-ip trip
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
-systemctl daemon-reload
-systemctl restart trip
-systemctl enable trip
 
 }
 
-insws() {
+INSTALL_WEBSOCKET() {
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/install-ws.sh && chmod +x install-ws.sh && ./install-ws.sh
 clear
-cat > /etc/issue.net << END
-happy conneting
-
-<p style="text-align: center;">
-    <span style="color: #41A85F; font-size: 26px;"><strong>Murah Tunnel</strong></span>
-</p>
-<p style="text-align: center;">
-    <span style="font-family: 'Trebuchet MS', Helvetica, sans-serif;">
-        <span style="color: #E25041; background-color: #61BD6D;">Bandung Barat</span>
-        <span style="background-color: #61BD6D;">&nbsp;</span>
-    </span>
-</p>
-<p style="text-align: center;">
-    <span style="color: #B8312F;">Telp/WhatsApp</span>:
-    <span style="color: #EFEFEF;">083197765857</span>
-</p>
-END
+# banner ssh
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/banner_ssh.sh && chmod +x banner_ssh.sh && ./banner_ssh.sh
 clear
 }
 
-insbkp() {
+INSTALL_BACKUP() {
 apt install rclone
 printf "q\n" | rclone config
 wget -O /root/.config/rclone/rclone.conf "https://github.com/Andyyuda/vip/raw/main/limit/rclone.conf"
-git clone  https://github.com/zhets/wondershaper.git
+git clone  https://github.com/murahtunnel/wondershaper.git
 cd wondershaper
 make install
 cd
@@ -403,108 +356,57 @@ rm -f /root/set-br.sh
 rm -f /root/limit.sh
 }
 
-insohp() {
+INSTALL_OHP() {
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/ohp.sh && chmod +x ohp.sh && ./ohp.sh
 clear
 }
 
 menu() {
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/menu/update.sh && chmod +x update.sh && ./update.sh
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/menu/install_menu.sh && chmod +x install_menu.sh && ./install_menu.sh
 clear
 }
 
-insdns() {
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/slowdns/installsl.sh && chmod +x installsl.sh && bash installsl.sh
-clear
-}
-
-insudp() {
-
-cd
-mkdir -p /etc/udp
-
-wget -q --show-progress --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1_VyhL5BILtoZZTW4rhnUiYzc4zHOsXQ8' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1_VyhL5BILtoZZTW4rhnUiYzc4zHOsXQ8" -O /etc/udp/udp-custom && rm -rf /tmp/cookies.txt
-chmod +x /etc/udp/udp-custom
-
-wget -q --show-progress --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1_XNXsufQXzcTUVVKQoBeX5Ig0J7GngGM' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1_XNXsufQXzcTUVVKQoBeX5Ig0J7GngGM" -O /etc/udp/config.json && rm -rf /tmp/cookies.txt
-chmod 644 /etc/udp/config.json
-
-if [ -z "$1" ]; then
-cat <<EOF > /etc/systemd/system/udp-custom.service
-[Unit]
-Description=UDP Custom by ePro Dev. Team
-
-[Service]
-User=root
-Type=simple
-ExecStart=/etc/udp/udp-custom server
-WorkingDirectory=/etc/udp/
-Restart=always
-RestartSec=2s
-
-[Install]
-WantedBy=default.target
-EOF
-else
-cat <<EOF > /etc/systemd/system/udp-custom.service
-[Unit]
-Description=UDP Custom by ePro Dev. Team
-
-[Service]
-User=root
-Type=simple
-ExecStart=/etc/udp/udp-custom server -exclude $1
-WorkingDirectory=/etc/udp/
-Restart=always
-RestartSec=2s
-
-[Install]
-WantedBy=default.target
-EOF
-fi
-
-systemctl restart udp-custom
-systemctl enable udp-custom
-
+INSTALL_UDP_CUSTOM() {
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/UDP.sh && chmod +x UDP.sh && ./UDP.sh
 clear
 }
 
 if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
 echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
-setup_ubuntu
+UNTUK_UBUNTU
 elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
 echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
-setup_debian
+UNTUK_DEBIAN
 else
 echo -e " Your OS Is Not Supported ( ${YELLOW}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${FONT} )"
 fi
 }
 
-function setup_debian(){
+function UNTUK_DEBIAN(){
 lane_atas
 echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
 lane_bawah
-animation_loading 'inssh'
+animation_loading 'INSTALL_SSH'
 
 lane_atas
 echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
 lane_bawah
-animation_loading 'insxray'
+animation_loading 'INSTALL_XRAY'
 
 lane_atas
 echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
 lane_bawah
-animation_loading 'insws'
+animation_loading 'INSTALL_WEBSOCKET'
 
 lane_atas
 echo -e "${c}│       ${g}PROCESS INSTALLED BACKUP MENU${NC}${c}      │${NC}"
 lane_bawah
-animation_loading 'insbkp'
+animation_loading 'INSTALL_BACKUP'
 
 lane_atas
 echo -e "${c}│           ${g}PROCESS INSTALLED OHP${NC}${c}          │${NC}"
 lane_bawah
-animation_loading 'insohp'
+animation_loading 'INSTALL_OHP'
 
 lane_atas
 echo -e "${c}│           ${g}DOWNLOAD EXTRA MENU${NC}${c}            │${NC}"
@@ -512,57 +414,47 @@ lane_bawah
 animation_loading 'menu'
 
 lane_atas
-echo -e "${c}│           ${g}DOWNLOAD SYSTEM${NC}${c}                │${NC}"
-lane_bawah
-animation_loading 'insdns'
-
-lane_atas
 echo -e "${c}│           ${g}DOWNLOAD UDP CUSTOM${NC}${c}            │${NC}"
 lane_bawah
-animation_loading 'insudp'
+animation_loading 'INSTALL_UDP_CUSTOM'
 
 }
 
-function setup_ubuntu(){
+function UNTUK_UBUNTU(){
 lane_atas
 echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
 lane_bawah
-inssh
+animation_loading 'INSTALL_SSH'
 
 lane_atas
 echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
 lane_bawah
-insxray
+animation_loading 'INSTALL_XRAY'
 
 lane_atas
 echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
 lane_bawah
-insws
+animation_loading 'INSTALL_WEBSOCKET'
 
 lane_atas
 echo -e "${c}│       ${g}PROCESS INSTALLED BACKUP MENU${NC}${c}      │${NC}"
 lane_bawah
-insbkp
+animation_loading 'INSTALL_BACKUP'
 
 lane_atas
 echo -e "${c}│           ${g}PROCESS INSTALLED OHP${NC}${c}          │${NC}"
 lane_bawah
-insohp
+animation_loading 'INSTALL_OHP'
 
 lane_atas
 echo -e "${c}│           ${g}DOWNLOAD EXTRA MENU${NC}${c}            │${NC}"
 lane_bawah
-menu
-
-lane_atas
-echo -e "${c}│           ${g}DOWNLOAD SYSTEM${NC}${c}                │${NC}"
-lane_bawah
-insdns
+animation_loading 'menu'
 
 lane_atas
 echo -e "${c}│           ${g}DOWNLOAD UDP CUSTOM${NC}${c}            │${NC}"
 lane_bawah
-insudp
+animation_loading 'INSTALL_UDP_CUSTOM'
 
 }
 
@@ -601,10 +493,10 @@ if ! grep -q "^net.netfilter.nf_conntrack_tcp_timeout_time_wait" "$SYSCTL_CONF";
     echo "$NF_CONNTRACK_TIMEOUT" >> "$SYSCTL_CONF" 2>/dev/null
 fi
 
+
 # Terapkan perubahan
 sysctl -p >/dev/null 2>&1
 
-pasang_domain
 Dependencies
 Installasi
 
@@ -622,6 +514,11 @@ Installasi
 		SHELL=/bin/sh
 		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 		0 5 * * * /sbin/reboot
+	END
+    cat >/etc/cron.d/autobackuo <<-END
+		SHELL=/bin/sh
+		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+		2 0 * * * root /usr/local/sbin/autobackup
 	END
 
 cat> /root/.profile << END
@@ -662,27 +559,31 @@ curl -s ipinfo.io/org?token=75082b4831f909  | cut -d " " -f 2-10 >> /etc/xray/is
 rm -f /root/*.sh
 rm -f /root/*.txt
 
-#secs_to_human "$(($(date +%s) - ${start}))" | tee -a log-install.txt
 
 CHATID="7428226275"
 KEY="7382456251:AAFFC-8A6VsotlfAQj6MXe4Mff-7MNX5yRs"
 URL="https://api.telegram.org/bot$KEY/sendMessage"
-TEXT="
-<code>────────────────────</code>
-<b>🍆 AUTOSCRIPT PREMIUM 🍆</b>
-<code>────────────────────</code>
-<code>Client  :</code> <code>$client</code>
-<code>ISP     :</code> <code>$ISP</code>
-<code>Country :</code> <code>$CITY</code>
-<code>DATE    :</code> <code>$date</code>
-<code>Time    :</code> <code>$time</code>
-<code>Expired :</code> <code>$exp</code>
-<code>────────────────────</code>
-<i>Automatic Notifications From</i>
-<i>MURAH TUNNEL</i>
 
-"'&reply_markup={"inline_keyboard":[[{"text":" ʙᴜʏ ꜱᴄʀɪᴘᴛ ","url":"https://t.me/MurahTunnel"}]]}' 
-curl -s --max-time 10 -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+TEXT="
+<code>= = = = = = = = = = = = =</code>
+<b>   🧱 AUTOSCRIPT PREMIUM 🧱 </b>
+<b>        Notifications       </b>
+<code>= = = = = = = = = = = = =</code>
+<b>Client  :</b> <code>$client</code>
+<b>ISP     :</b> <code>$ISP</code>
+<b>Country :</b> <code>$CITY</code>
+<b>DATE    :</b> <code>$date</code>
+<b>Time    :</b> <code>$time</code>
+<b>Expired :</b> <code>$exp</code>
+<code>= = = = = = = = = = = = =</code>
+<i><b>       MURAH TUNNEL      </b></i>
+<code>= = = = = = = = = = = = =</code>"
+curl -s --max-time 10 -X POST "$URL" \
+-d "chat_id=$CHATID" \
+-d "text=$TEXT" \
+-d "parse_mode=HTML" \
+-d "disable_web_page_preview=true" \
+-d "reply_markup={\"inline_keyboard\":[[{\"text\":\" ʙᴜʏ ꜱᴄʀɪᴘᴛ \",\"url\":\"https://t.me/MurahTunnel\"}]]}"
 
 cd
 rm ~/.bash_history
@@ -690,23 +591,15 @@ rm -f openvpn
 rm -f key.pem
 rm -f cert.pem
 
-sleep 3
-echo  ""
+sleep 2
 cd
 clear
 echo -e "${c}┌────────────────────────────────────────────┐${NC}"
 echo -e "${c}│  ${g}INSTALL SCRIPT SELESAI..${NC}                  ${c}│${NC}"
 echo -e "${c}└────────────────────────────────────────────┘${NC}"
 echo  ""
-sleep 4
-# Menghapus bagian pilihan reboot
-# echo -e "[ ${yell}WARNING${NC} ] Do you want to reboot now ? (y/n)? "
-# read answer
-# if [ "$answer" == "${answer#[Yy]}" ] ;then
-# exit 0
-# else
-# reboot
-# fi
+echo -e "\e[92;1m dalam 3 detik akan Melakukan reboot.... \e[0m"
+sleep 3
 
-# Langsung melakukan reboot tanpa konfirmasi
+# Langsung reboot
 reboot
