@@ -1,21 +1,32 @@
 #!/bin/bash
 clear
 
-# repo
-GIT_CMD="https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/"
+# Repo GitHub
+GIT_CMD="https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/AUTOKILL_SERVICE"
 
-# download service
-wget -q -O /etc/systemd/system/kill-vme.service "${GIT_CMD}Xray_LIMIT/kill-vme.service" && chmod +x kill-vme.service >/dev/null 2>&1
-wget -q -O /etc/systemd/system/kill-vle.service "${GIT_CMD}Xray_LIMIT/kill-vle.service" && chmod +x kill-vle.service >/dev/null 2>&1
-wget -q -O /etc/systemd/system/kill-tro.service "${GIT_CMD}Xray_LIMIT/kill-tro.service" && chmod +x kill-tro.service >/dev/null 2>&1
-wget -q -O /etc/systemd/system/kill-ssh.service "${GIT_CMD}Xray_LIMIT/kill-ssh.service" && chmod +x kill-ssh.service >/dev/null 2>&1
-# systemctl
-systemctl daemon-reload
-systemctl enable kill-vme
-systemctl restart kill-vme
-systemctl enable kill-vle
-systemctl restart kill-vle
-systemctl enable kill-tro
-systemctl restart kill-tro
-systemctl enable kill-ssh
-systemctl restart kill-ssh
+# Daftar layanan yang akan diunduh
+SERVICES=("kill-vme" "kill-vle" "kill-tro" "kill-ssh")
+
+# Loop untuk mengunduh dan mengatur izin layanan
+for service in "${SERVICES[@]}"; do
+    FILE_PATH="/etc/systemd/system/${service}.service"
+    
+    # Unduh file service
+    wget -q -O "$FILE_PATH" "${GIT_CMD}/${service}.service"
+    
+    # Cek apakah file berhasil diunduh
+    if [[ ! -f "$FILE_PATH" ]]; then
+        echo "Gagal mengunduh ${service}.service"
+        exit 1
+    fi
+
+    # Beri izin eksekusi
+    chmod +x "$FILE_PATH"
+    
+    # Aktifkan dan restart layanan
+    systemctl daemon-reload
+    systemctl enable "$service"
+    systemctl restart "$service"
+    
+    echo "Berhasil menginstal dan menjalankan ${service}"
+done
