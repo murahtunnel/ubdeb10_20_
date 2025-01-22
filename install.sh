@@ -63,21 +63,16 @@ checking_sc() {
   else
     clear
     echo -e "\033[96m────────────────────────────────────────────\033[0m"
-    echo -e "\033[41;37m             Expired Autoscript             \033[0m"
+    echo -e "\033[44;37m             Expired Autoscript             \033[0m"
     echo -e "\033[96m────────────────────────────────────────────\033[0m"
+    echo -e "\e[95;1m buy / sewa AutoScript installer VPS \e[0m"
+    echo -e "\e[96;1m   1 IP        : 10.000  Rp \e[0m"
+    echo -e "\e[96;1m   2 IP        : 15.000  Rp \e[0m"   
+    echo -e "\e[96;1m   7 IP        : 40.000  Rp \e[0m"
+    echo -e "\e[96;1m   Unli IP     : 150.000 Rp \e[0m"
+    echo -e "\e[97;1m   open source : 400.000 Rp \e[0m"       
     echo -e ""
-    echo -e " \033[31mIP Address access is not allowed\033[0m"
-    echo -e ""
-    echo -e "  Price For 1 Month"
-    echo -e ""
-    echo -e "   1 IP Address : 8.000 Rp"
-    echo -e "   5 IP Address : 30.000 Rp"
-    echo -e "   10 IP Address : 50.000 Rp"
-    echo -e "   Unli IP Address : 150.000 Rp"
-    echo -e "   open source/script jadi hak milik : 300.000 Rp"       
-    echo -e ""
-    echo -e ""
-    echo -e " \033[34mWhatsapp  : +6283197765857 \033[0m"
+    echo -e "\033[34m Contack WA/TLP: 083197765857 \033[0m"
     echo -e "\033[96m────────────────────────────────────────────\033[0m"
     exit 0
   fi
@@ -132,12 +127,7 @@ echo "OpenVZ is not supported"
 exit 1
 fi
 
-function generate_random_subdomain() {
-
-    sub=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
-}
-
-function pointing() {
+function pointingdomain() {
 
     if [ -f /etc/xray/domain ] && [ -s /etc/xray/domain ]; then
         echo "Domain sudah ada, melewati proses pointing."
@@ -147,7 +137,7 @@ function pointing() {
     apt update
     apt install jq curl -y
     DOMAIN=klmpk.my.id
-    generate_random_subdomain
+    sub=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
     dns=${sub}.${DOMAIN}
     CF_KEY=9d25535086484fb695ab64a70a70532a32fd4
     CF_ID=andyyuda41@gmail.com
@@ -181,23 +171,21 @@ function pointing() {
 
     # Menyimpan domain ke /etc/xray/domain hanya jika tidak ada
     echo "$dns" > /etc/xray/domain
+    clear
     echo ""
-    sleep 1
-    echo -e "Subdomain kamu adalah ${dns}"
-    cd
-    sleep 2
+    echo -e "\e[96;1mYour Domains:\e[0m ${dns}"
 }
 
-function pasang_domain_otomatis() {
+function MakeDirectories() {
+    cd
     # Membuat direktori yang diperlukan
     mkdir -p /etc/xray
     mkdir -p /var/lib/LT/ >/dev/null 2>&1
     echo "IP=" >> /var/lib/LT/ipvps.conf
-    touch /etc/.{ssh,vmess,vless,trojan,shadowsocks}.db
-    mkdir -p /etc/{xray,bot,vmess,vless,trojan,shadowsocks,ssh,limit,usr}
-    touch /etc/noobzvpns/users.json
+    touch /etc/.{ssh,vmess,vless,trojan}.db
+    mkdir -p /etc/{xray,bot,vmess,vless,trojan,ssh,limit,usr}
     mkdir -p /etc/xray/limit
-    mkdir -p /etc/xray/limit/{ssh,vmess,vless,trojan,shadowsocks}
+    mkdir -p /etc/xray/limit/{ssh,vmess,vless,trojan}
     mkdir -p /etc/lunatic/vmess/ip
     mkdir -p /etc/lunatic/vless/ip
     mkdir -p /etc/lunatic/trojan/ip
@@ -209,42 +197,38 @@ function pasang_domain_otomatis() {
     mkdir -p /etc/lunatic/trojan/usage
 
 # detail account
-
     mkdir -p /etc/lunatic/vmess/detail
     mkdir -p /etc/lunatic/vless/detail
     mkdir -p /etc/lunatic/trojan/detail
     mkdir -p /etc/lunatic/ssh/detail
 
-# dir xray limit                
+# dir xray limit quota                
     mkdir -p /etc/limit/vmess
     mkdir -p /etc/limit/vless
     mkdir -p /etc/limit/trojan
     mkdir -p /etc/limit/ssh
-
-    
+# dir protocol
     mkdir -p /etc/vmess
     mkdir -p /etc/vless
     mkdir -p /etc/trojan
-    mkdir -p /etc/shadowsocks
     mkdir -p /etc/ssh
     touch /etc/lunatic/vmess/.vmess.db
     touch /etc/lunatic/vless/.vless.db
     touch /etc/lunatic/trojan/.trojan.db
-    touch /etc/lunatic/shadowsocks/.shadowsocks.db
     touch /etc/lunatic/ssh/.ssh.db
     touch /etc/lunatic/bot/.bot.db
     echo "& plughin Account" >>/etc/lunatic/vmess/.vmess.db
     echo "& plughin Account" >>/etc/lunatic/vless/.vless.db
     echo "& plughin Account" >>/etc/lunatic/trojan/.trojan.db
-    echo "& plughin Account" >>/etc/lunatic/shadowsocks/.shadowsocks.db
     echo "& plughin Account" >>/etc/lunatic/ssh/.ssh.db
 
-    # Menjalankan fungsi pointing
-    pointing
 }
 
-pasang_domain_otomatis
+# call function
+MakeDirectories
+pointingdomain
 
+# install dependencies
 function Dependencies() {
 cd
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/tools.sh &> /dev/null
@@ -485,50 +469,6 @@ systemctl enable udp-custom
 clear
 }
 
-insnoob() {
-# Buat Direktori
-mkdir -p /etc/noobzvpns
-
-# Bersihkan layar
-clear
-
-# Buat file konfigurasi JSON
-cat > /etc/noobzvpns/config.json <<-JSON
-{
-	"tcp_std": [
-		8080
-	],
-	"tcp_ssl": [
-		8443
-	],
-	"ssl_cert": "/etc/noobzvpns/cert.pem",
-	"ssl_key": "/etc/noobzvpns/key.pem",
-	"ssl_version": "AUTO",
-	"conn_timeout": 60,
-	"dns_resolver": "/etc/resolv.conf",
-	"http_ok": "HTTP/1.1 101 Switching Protocols[crlf]Upgrade: websocket[crlf][crlf]"
-}
-JSON
-# Port dari tcp_std & tcp_ssl dapat diubah sesuai kebutuhan agar tidak bentrok dengan layanan lain di VPS
-
-# Unduh file yang diperlukan
-#wget -q -O /usr/bin/noobzvpns "https://github.com/noobz-id/noobzvpns/raw/master/noobzvpns.x86_64"
-#wget -q -O /etc/noobzvpns/cert.pem "https://github.com/noobz-id/noobzvpns/raw/master/cert.pem"
-#wget -q -O /etc/noobzvpns/key.pem "https://github.com/noobz-id/noobzvpns/raw/master/key.pem"
-
-# Berikan izin eksekusi pada file
-#chmod +x /usr/bin/noobzvpns
-#chmod 600 /etc/noobzvpns/cert.pem /etc/noobzvpns/key.pem
-
-# Unduh service file dan konfigurasi
-#wget -q -O /etc/systemd/system/noobzvpns.service "https://github.com/noobz-id/noobzvpns/raw/master/noobzvpns.service"
-
-# Enable dan mulai layanan
-#systemctl enable noobzvpns
-#systemctl start noobzvpns
-
-clear
-}
 if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
 echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
 setup_ubuntu
@@ -539,7 +479,6 @@ else
 echo -e " Your OS Is Not Supported ( ${YELLOW}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${FONT} )"
 fi
 }
-
 
 function setup_debian(){
 lane_atas
