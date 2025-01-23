@@ -185,14 +185,9 @@ MakeDirectories
 cat > /usr/bin/pointing_DOMAINS << END
 #!/bin/bash
 clear
-
-    if [ -f /etc/xray/domain ] && [ -s /etc/xray/domain ]; then
-        echo "Domain sudah ada, melewati proses pointing."
-        return
-    fi
-
     apt update
     apt install jq curl -y
+    IP=$(cat /root/.myip);
     DOMAIN=klmpk.my.id
     sub=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
     dns=${sub}.${DOMAIN}
@@ -252,9 +247,11 @@ start=$(date +%s)
 ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 apt install git curl -y >/dev/null 2>&1
 apt install python -y >/dev/null 2>&1
+
 }
 
 function Installasi(){
+cd
 animation_loading() {
     CMD[0]="$1"
     CMD[1]="$2"
@@ -568,7 +565,7 @@ TEXT="
 <b>Time    :</b> <code>$time</code>
 <b>Expired :</b> <code>$exp</code>
 <code>= = = = = = = = = = = = =</code>
-<i><b>       MURAH TUNNEL      </b></i>
+<b>        LUNATIC TUNNELING     </b>
 <code>= = = = = = = = = = = = =</code>"
 curl -s --max-time 10 -X POST "$URL" \
 -d "chat_id=$CHATID" \
