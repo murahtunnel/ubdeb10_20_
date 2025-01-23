@@ -496,11 +496,6 @@ sysctl -p >/dev/null 2>&1
 Dependencies
 Installasi
 
-    cat >/etc/cron.d/xp_all <<-END
-		SHELL=/bin/sh
-		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-		2 0 * * * root /usr/bin/xp
-	END
     cat >/etc/cron.d/logclean <<-END
 		SHELL=/bin/sh
 		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
@@ -511,10 +506,19 @@ Installasi
 		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 		0 5 * * * /sbin/reboot
 	END
-    cat >/etc/cron.d/autobackuo <<-END
+    cat >/etc/cron.d/autobackup <<-END
 		SHELL=/bin/sh
 		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 		2 0 * * * root /usr/local/sbin/autobackup
+	END
+    cat >/etc/cron.d/kill_exp <<-END
+                SHELL=/bin/bash
+                PATH=/sbin:/bin:/usr/sbin:/usr/bin
+                */1 * * * * root /usr/local/sbin/kill_expired exp
+                */1 * * * * root /usr/local/sbin/kill_expired ssh
+                */1 * * * * root /usr/local/sbin/kill_expired vm
+                */1 * * * * root /usr/local/sbin/kill_expired vl
+                */1 * * * * root /usr/local/sbin/kill_expired tr
 	END
 
 cat> /root/.profile << END
@@ -562,17 +566,16 @@ URL="https://api.telegram.org/bot$KEY/sendMessage"
 
 TEXT="
 <code>= = = = = = = = = = = = =</code>
-<b>   🧱 AUTOSCRIPT PREMIUM 🧱 </b>
-<b>        Notifications       </b>
+<b>            Notifications   </b>
 <code>= = = = = = = = = = = = =</code>
-<b>Client  :</b> <code>$client</code>
-<b>ISP     :</b> <code>$ISP</code>
-<b>Country :</b> <code>$CITY</code>
-<b>DATE    :</b> <code>$date</code>
-<b>Time    :</b> <code>$time</code>
-<b>Expired :</b> <code>$exp</code>
-<code>= = = = = = = = = = = = =</code>
-<i><b>       MURAH TUNNEL      </b></i>
+<b>ISP VPS    :</b> <code>$ISP</code>
+<b>SERVER VPS :</b> <code>$CITY</code>
+<b>TIMES REAL :</b> <code>$time</code>
+<b>SCRIPT KEY :</b> <code>$client</code>
+<b>SCRIPT EXP :</b> <code>$exp</code>
+<b>SCRIPT REG :</b> <code>$date</code>
+<b= = = = = = = = = = = = =</b>
+<b>LUNATIC TUNNELING SCRIPTS</b>
 <code>= = = = = = = = = = = = =</code>"
 curl -s --max-time 10 -X POST "$URL" \
 -d "chat_id=$CHATID" \
