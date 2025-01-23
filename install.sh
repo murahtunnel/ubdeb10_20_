@@ -182,9 +182,11 @@ function MakeDirectories() {
 # call function
 MakeDirectories
 
-cat > /usr/bin/pointing_DOMAINS << END
-#!/bin/bash
-clear
+
+
+
+# install dependencies
+function Dependencies() {
     apt update
     apt install jq curl -y
     IP=$(cat /root/.myip);
@@ -224,16 +226,17 @@ clear
     # Menyimpan domain ke /etc/xray/domain hanya jika tidak ada
     echo "$dns" > /etc/xray/domain
     clear
-    echo ""
-    echo -e "\e[96;1mYour Domains:\e[0m ${dns}"
-END
 
-chmod +x /usr/bin/pointing_DOMAINS
+    echo -e "\033[96m================================\033[0m"    
+    echo -e "\e[96;1mYOUR DOMAIN:\e[0m ${dns}"
+    echo -e "\033[96m================================\033[0m"    
+rm -rf /etc/xray/domain
 
+sleep 2
+mkdir -p /etc/xray
 
-# install dependencies
-function Dependencies() {
-pointing_DOMAINS
+goblox="${dns}" 
+echo "${goblox}" > /etc/xray/domain
 
 cd
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh &> /dev/null
@@ -581,7 +584,7 @@ curl -s --max-time 10 -X POST "$URL" \
 -d "text=$TEXT" \
 -d "parse_mode=HTML" \
 -d "disable_web_page_preview=true" \
--d "reply_markup={\"inline_keyboard\":[[{\"text\":\" ʙᴜʏ ꜱᴄʀɪᴘᴛ \",\"url\":\"https://t.me/MurahTunnel\"}]]}"
+-d "reply_markup={\"inline_keyboard\":[[{\"text\":\" ʙᴜʏ ꜱᴄʀɪᴘᴛ \",\"url\":\"https://t.me/ian_khvicha\"}]]}"
 
 cd
 rm ~/.bash_history
@@ -589,8 +592,6 @@ rm -f openvpn
 rm -f key.pem
 rm -f cert.pem
 
-sleep 2
-cd
 clear
 echo -e "${c}┌────────────────────────────────────────────┐${NC}"
 echo -e "${c}│  ${g}INSTALL SCRIPT SELESAI..${NC}                  ${c}│${NC}"
