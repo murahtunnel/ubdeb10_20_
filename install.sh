@@ -191,7 +191,7 @@ MakeDirectories
 
     set -euo pipefail
     echo ""
-    echo "Proses Pointing Domain ${dns}..."
+    echo "Membuat Domain VPS ${dns}..."
     sleep 1
 
     ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
