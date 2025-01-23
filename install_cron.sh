@@ -23,12 +23,12 @@ clear
 		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 		2 0 * * * root /usr/local/sbin/autobackup
 	END
-    cat >/etc/cron.d/kill_exp <<-END	
+    cat >/etc/cron.d/kill_account <<-END	
 	    SHELL=/bin/bash
         PATH=/sbin:/bin:/usr/sbin:/usr/bin
-        */1 * * * * root /usr/local/sbin/kill_expired exp
-        */1 * * * * root /usr/local/sbin/kill_expired vm
-        */1 * * * * root /usr/local/sbin/kill_expired vl
-        */1 * * * * root /usr/local/sbin/kill_expired tr
-        */1 * * * * root /usr/local/sbin/kill_expired ssh                                
+        */1 * * * * root /usr/local/sbin/kill_exp exp_kill
+        */1 * * * * root /usr/local/sbin/kill_exp vme_kill
+        */1 * * * * root /usr/local/sbin/kill_exp vle_kill
+        */1 * * * * root /usr/local/sbin/kill_exp tro_kill
+        */1 * * * * root /usr/local/sbin/kill_exp ssh_kill                                
 	END
