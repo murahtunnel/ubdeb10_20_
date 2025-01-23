@@ -44,4 +44,4 @@ apt autoremove -y >/dev/null 2>&1
 
 yellow() { echo -e "\\033[33;1m${*}\\033[0m"; }
 yellow "Dependencies successfully installed..."
-sleep 1.5
+sleep 1
