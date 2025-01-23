@@ -44,7 +44,6 @@ function lane_bawah() {
 echo -e "${c}└──────────────────────────────────────────┘${NC}"
 }
 
-apt update
 data_server=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
 date_list=$(date +"%Y-%m-%d" -d "$data_server")
 url_izin="https://raw.githubusercontent.com/murahtunnel/vps_access/main/ip"
@@ -63,7 +62,7 @@ checking_sc() {
   else
     clear
     echo -e "\033[96m============================================\033[0m"
-    echo -e "\033[44;37m           NotAllowed Autoscript            \033[0m"    
+    echo -e "\033[44;37m           NotAllowed Autoscript         \033[0m"    
     echo -e "\033[96m============================================\033[0m"
     echo -e "\e[95;1m buy / sewa AutoScript installer VPS \e[0m"
     echo -e "\033[96m============================================\033[0m"    
@@ -81,6 +80,7 @@ checking_sc() {
 }
 checking_sc
 
+function ARCHITECTURE() {
 if [[ "$( uname -m | awk '{print $1}' )" == "x86_64" ]]; then
     echo -ne
 else
@@ -128,7 +128,10 @@ if [ "$(systemd-detect-virt)" == "openvz" ]; then
 echo "OpenVZ is not supported"
 exit 1
 fi
+}
 
+# call
+ARCHITECTURE
 
 function MakeDirectories() {
     # Direktori utama
@@ -186,8 +189,7 @@ domain_setup
 # install dependencies
 function Dependencies() {
 cd
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh &> /dev/null
-chmod +x tools.sh && ./tools.sh
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh &> /dev/null
 
 wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
 
@@ -275,8 +277,11 @@ clear
 }
 
 INSTALL_WEBSOCKET() {
+
+# install-ws
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/install-ws.sh && chmod +x install-ws.sh && ./install-ws.sh
 clear
+
 # banner ssh
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/banner_ssh.sh && chmod +x banner_ssh.sh && ./banner_ssh.sh
 clear
@@ -437,39 +442,16 @@ fi
 # Terapkan perubahan
 sysctl -p >/dev/null 2>&1
 
+function install_crond(){
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/install_cron.sh && chmod +x install_cron.sh && ./install_cron.sh
+clear
+}
+
 Dependencies
 Installasi
+install_crond
 
-    cat >/etc/cron.d/xp_all <<-END
-		SHELL=/bin/sh
-		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-		2 0 * * * root /usr/bin/xp
-	END
-    cat >/etc/cron.d/logclean <<-END
-		SHELL=/bin/sh
-		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-		*/59 * * * * root /usr/bin/logclean
-	END
-	    cat >/etc/cron.d/daily_reboot <<-END
-		SHELL=/bin/sh
-		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-		0 5 * * * /sbin/reboot
-	END
-    cat >/etc/cron.d/autobackup <<-END
-		SHELL=/bin/sh
-		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-		2 0 * * * root /usr/local/sbin/autobackup
-	END
-    cat >/etc/cron.d/kill_exp <<-END	
-	    SHELL=/bin/bash
-        PATH=/sbin:/bin:/usr/sbin:/usr/bin
-        */1 * * * * root /usr/local/sbin/kill_expired exp
-        */1 * * * * root /usr/local/sbin/kill_expired vm
-        */1 * * * * root /usr/local/sbin/kill_expired vl
-        */1 * * * * root /usr/local/sbin/kill_expired tr
-        */1 * * * * root /usr/local/sbin/kill_expired ssh                                
-	END
-
+# install cron.d
 cat> /root/.profile << END
 if [ "$BASH" ]; then
 if [ -f ~/.bashrc ]; then
@@ -509,10 +491,10 @@ rm -f /root/*.sh
 rm -f /root/*.txt
 
 
+function SENDER_NOTIFICATION() {
 CHATID="7428226275"
 KEY="7382456251:AAFFC-8A6VsotlfAQj6MXe4Mff-7MNX5yRs"
 URL="https://api.telegram.org/bot$KEY/sendMessage"
-
 TEXT="
 <code>= = = = = = = = = = = = =</code>
 <b>   🧱 AUTOSCRIPT PREMIUM 🧱 </b>
@@ -534,7 +516,9 @@ curl -s --max-time 10 -X POST "$URL" \
 -d "disable_web_page_preview=true" \
 -d "reply_markup={\"inline_keyboard\":[[{\"text\":\" ʙᴜʏ ꜱᴄʀɪᴘᴛ \",\"url\":\"https://t.me/ian_khvicha\"}]]}"
 
-cd
+clear
+}
+
 rm ~/.bash_history
 rm -f openvpn
 rm -f key.pem
@@ -546,7 +530,11 @@ echo -e "${c}│  ${g}INSTALL SCRIPT SELESAI..${NC}                  ${c}│${NC
 echo -e "${c}└────────────────────────────────────────────┘${NC}"
 echo  ""
 echo -e "\e[92;1m dalam 3 detik akan Melakukan reboot.... \e[0m"
+
+SENDER_NOTIFICATION
+
 sleep 3
 
+clear
 # Langsung reboot
 reboot
