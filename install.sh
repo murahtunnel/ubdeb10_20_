@@ -142,7 +142,7 @@ function MakeDirectories() {
     mkdir -p /etc/lunatic/vless/ip
     mkdir -p /etc/lunatic/trojan/ip
     mkdir -p /etc/lunatic/ssh/ip
-
+    mkdir -p /etc/lunatic/bot
 # limit quota xray   
     mkdir -p /etc/lunatic/vmess/usage
     mkdir -p /etc/lunatic/vless/usage
@@ -164,6 +164,7 @@ function MakeDirectories() {
     mkdir -p /etc/vless
     mkdir -p /etc/trojan
     mkdir -p /etc/ssh
+    
     touch /etc/lunatic/vmess/.vmess.db
     touch /etc/lunatic/vless/.vless.db
     touch /etc/lunatic/trojan/.trojan.db
@@ -178,12 +179,6 @@ function MakeDirectories() {
 MakeDirectories
 
 # Fungsi untuk pointing domain
-function pointingdomain() {
-    if [ -f /etc/xray/domain ] && [ -s /etc/xray/domain ]; then
-        echo "Domain sudah ada, melewati proses pointing."
-        return
-    fi
-
     apt update
     apt install jq curl -y
 
@@ -231,10 +226,8 @@ function pointingdomain() {
     clear
     echo ""
     echo -e "\e[96;1mYour Domain:\e[0m ${dns}"
-}
 
 # Fungsi untuk instalasi dependencies
-function Dependencies() {
     cd
     wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh -O tools.sh &> /dev/null
     chmod +x tools.sh 
@@ -246,13 +239,8 @@ function Dependencies() {
     ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
     apt install git curl -y >/dev/null 2>&1
     apt install python -y >/dev/null 2>&1
-}
 
-# Jalankan fungsi dengan pengecekan error
-pointingdomain || { echo "Pointing domain gagal. Keluar..."; exit 1; }
-Dependencies
-
-
+# mulai instal packet yg di butuhkan
 function Installasi(){
 animation_loading() {
     CMD[0]="$1"
