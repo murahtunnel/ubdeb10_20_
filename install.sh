@@ -129,119 +129,65 @@ echo "OpenVZ is not supported"
 exit 1
 fi
 
+
 function MakeDirectories() {
-    cd
-    # Membuat direktori yang diperlukan
-    mkdir -p /etc/xray
-    mkdir -p /var/lib/LT/ >/dev/null 2>&1
-    echo "IP=" >> /var/lib/LT/ipvps.conf
-    touch /etc/.{ssh,vmess,vless,trojan}.db
-    mkdir -p /etc/{xray,bot,vmess,vless,trojan,ssh,limit,usr}
-    mkdir -p /etc/xray/limit
-    mkdir -p /etc/xray/limit/{ssh,vmess,vless,trojan}
-    mkdir -p /etc/lunatic/vmess/ip
-    mkdir -p /etc/lunatic/vless/ip
-    mkdir -p /etc/lunatic/trojan/ip
-    mkdir -p /etc/lunatic/ssh/ip
-    mkdir -p /etc/lunatic/bot
-    mkdir -p /etc/lunatic/bot/notif
+    # Direktori utama
+    local main_dirs=(
+        "/etc/xray" "/var/lib/LT" "/etc/lunatic" "/etc/limit"
+        "/etc/vmess" "/etc/vless" "/etc/trojan" "/etc/ssh"
+    )
     
-# limit quota xray   
-    mkdir -p /etc/lunatic/vmess/usage
-    mkdir -p /etc/lunatic/vless/usage
-    mkdir -p /etc/lunatic/trojan/usage
+    local lunatic_subdirs=("vmess" "vless" "trojan" "ssh" "bot")
+    local lunatic_types=("usage" "ip" "detail")
 
-# detail account
-    mkdir -p /etc/lunatic/vmess/detail
-    mkdir -p /etc/lunatic/vless/detail
-    mkdir -p /etc/lunatic/trojan/detail
-    mkdir -p /etc/lunatic/ssh/detail
+    local protocols=("vmess" "vless" "trojan" "ssh")
 
-# dir xray limit quota                
-    mkdir -p /etc/limit/vmess
-    mkdir -p /etc/limit/vless
-    mkdir -p /etc/limit/trojan
-    mkdir -p /etc/limit/ssh
-# dir protocol
-    mkdir -p /etc/vmess
-    mkdir -p /etc/vless
-    mkdir -p /etc/trojan
-    mkdir -p /etc/ssh
-    touch /etc/lunatic/vmess/.vmess.db
-    touch /etc/lunatic/vless/.vless.db
-    touch /etc/lunatic/trojan/.trojan.db
-    touch /etc/lunatic/ssh/.ssh.db
-    touch /etc/lunatic/bot/.bot.db
-    echo "& plughin Account" >>/etc/lunatic/vmess/.vmess.db
-    echo "& plughin Account" >>/etc/lunatic/vless/.vless.db
-    echo "& plughin Account" >>/etc/lunatic/trojan/.trojan.db
-    echo "& plughin Account" >>/etc/lunatic/ssh/.ssh.db
+    for dir in "${main_dirs[@]}"; do
+        mkdir -p "$dir"
+    done
 
+    for service in "${lunatic_subdirs[@]}"; do
+        for type in "${lunatic_types[@]}"; do
+            mkdir -p "/etc/lunatic/$service/$type"
+        done
+    done
+
+    for protocol in "${protocols[@]}"; do
+        mkdir -p "/etc/limit/$protocol"
+    done
+
+    local databases=(
+        "/etc/lunatic/vmess/.vmess.db"
+        "/etc/lunatic/vless/.vless.db"
+        "/etc/lunatic/trojan/.trojan.db"
+        "/etc/lunatic/ssh/.ssh.db"
+        "/etc/lunatic/bot/.bot.db"
+    )
+
+    for db in "${databases[@]}"; do
+        touch "$db"
+        echo "& plugin Account" >> "$db"
+    done
+
+    touch /etc/.{ssh,vmess,vless,trojan}.db
+    echo "IP=" > /var/lib/LT/ipvps.conf
 }
 
-# call function
 MakeDirectories
 
 
+function domain_setup(){
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/domains.sh && chmod +x domains.sh && ./domains.sh
+clear
+}
 
+domain_setup
 
 # install dependencies
 function Dependencies() {
-    apt update
-    apt install jq curl -y
-    IP=$(cat /root/.myip);
-    DOMAIN=klmpk.my.id
-    sub=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
-    dns=${sub}.${DOMAIN}
-    CF_KEY=9d25535086484fb695ab64a70a70532a32fd4
-    CF_ID=andyyuda41@gmail.com
-    set -euo pipefail
-    echo ""
-    echo "Proses Pointing Domain ${dns}..."
-    sleep 1
-    ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
-         -H "X-Auth-Email: ${CF_ID}" \
-         -H "X-Auth-Key: ${CF_KEY}" \
-         -H "Content-Type: application/json" | jq -r .result[0].id)
-
-    RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${dns}" \
-         -H "X-Auth-Email: ${CF_ID}" \
-         -H "X-Auth-Key: ${CF_KEY}" \
-         -H "Content-Type: application/json" | jq -r .result[0].id)
-
-    if [[ "${#RECORD}" -le 10 ]]; then
-         RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
-         -H "X-Auth-Email: ${CF_ID}" \
-         -H "X-Auth-Key: ${CF_KEY}" \
-         -H "Content-Type: application/json" \
-         --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":true}' | jq -r .result.id)
-    fi
-
-    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
-         -H "X-Auth-Email: ${CF_ID}" \
-         -H "X-Auth-Key: ${CF_KEY}" \
-         -H "Content-Type: application/json" \
-         --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":true}')
-
-    # Menyimpan domain ke /etc/xray/domain hanya jika tidak ada
-    echo "$dns" > /etc/xray/domain
-    clear
-
-    echo -e "\033[96m================================\033[0m"    
-    echo -e "\e[96;1mYOUR DOMAIN:\e[0m ${dns}"
-    echo -e "\033[96m================================\033[0m"    
-rm -rf /etc/xray/domain
-
-sleep 2
-mkdir -p /etc/xray
-
-goblox="${dns}" 
-echo "${goblox}" > /etc/xray/domain
-
 cd
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh &> /dev/null
-chmod +x tools.sh && ./tools.sh && rm -rf tools.sh
-sudo apt install at -y >/dev/null 2>&1
+chmod +x tools.sh && ./tools.sh
 
 wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
 
@@ -250,11 +196,9 @@ start=$(date +%s)
 ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 apt install git curl -y >/dev/null 2>&1
 apt install python -y >/dev/null 2>&1
-
 }
 
 function Installasi(){
-cd
 animation_loading() {
     CMD[0]="$1"
     CMD[1]="$2"
@@ -299,6 +243,10 @@ animation_loading() {
 
 
 INSTALL_SSH() {
+
+# install at untuk meng kill triall ssh
+sudo apt install at -y >/dev/null 2>&1
+
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ssh/ssh-vpn.sh && chmod +x ssh-vpn.sh && ./ssh-vpn.sh
 
 # installer gotop
