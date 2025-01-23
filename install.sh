@@ -175,8 +175,10 @@ function MakeDirectories() {
     echo "& plughin Account" >>/etc/lunatic/ssh/.ssh.db
 }
 
-function Run_First_INSTALL() {
 MakeDirectories
+
+# Fungsi untuk pointing domain
+function pointingdomain() {
     if [ -f /etc/xray/domain ] && [ -s /etc/xray/domain ]; then
         echo "Domain sudah ada, melewati proses pointing."
         return
@@ -184,19 +186,28 @@ MakeDirectories
 
     apt update
     apt install jq curl -y
+
     DOMAIN=klmpk.my.id
     sub=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
     dns=${sub}.${DOMAIN}
-    CF_KEY=9d25535086484fb695ab64a70a70532a32fd4
-    CF_ID=andyyuda41@gmail.com
+    CF_KEY="9d25535086484fb695ab64a70a70532a32fd4"
+    CF_ID="andyyuda41@gmail.com"
+    IP=$(curl -s ifconfig.me)
+
     set -euo pipefail
     echo ""
     echo "Proses Pointing Domain ${dns}..."
     sleep 1
+
     ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
          -H "X-Auth-Email: ${CF_ID}" \
          -H "X-Auth-Key: ${CF_KEY}" \
          -H "Content-Type: application/json" | jq -r .result[0].id)
+
+    if [[ -z "$ZONE" || "$ZONE" == "null" ]]; then
+        echo "Gagal mendapatkan Zone ID dari Cloudflare."
+        exit 1
+    fi
 
     RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${dns}" \
          -H "X-Auth-Email: ${CF_ID}" \
@@ -204,45 +215,43 @@ MakeDirectories
          -H "Content-Type: application/json" | jq -r .result[0].id)
 
     if [[ "${#RECORD}" -le 10 ]]; then
-         RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
-         -H "X-Auth-Email: ${CF_ID}" \
-         -H "X-Auth-Key: ${CF_KEY}" \
-         -H "Content-Type: application/json" \
-         --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":true}' | jq -r .result.id)
+        RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+            -H "X-Auth-Email: ${CF_ID}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+            --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":true}' | jq -r .result.id)
     fi
 
-    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
-         -H "X-Auth-Email: ${CF_ID}" \
-         -H "X-Auth-Key: ${CF_KEY}" \
-         -H "Content-Type: application/json" \
-         --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":true}')
+    if [[ -z "$RECORD" || "$RECORD" == "null" ]]; then
+        echo "Gagal membuat DNS record di Cloudflare."
+        exit 1
+    fi
 
-    # Menyimpan domain ke /etc/xray/domain hanya jika tidak ada
     echo "$dns" > /etc/xray/domain
     clear
     echo ""
-    echo -e "\e[96;1mYour Domains:\e[0m ${dns}"
-    
+    echo -e "\e[96;1mYour Domain:\e[0m ${dns}"
 }
 
-Run_First_INSTALL
-
-
+# Fungsi untuk instalasi dependencies
 function Dependencies() {
-cd
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh &> /dev/null
-chmod +x tools.sh 
-bash tools.sh
-sudo apt install at -y >/dev/null 2>&1
-
-wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
-
-clear
-start=$(date +%s)
-ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-apt install git curl -y >/dev/null 2>&1
-apt install python -y >/dev/null 2>&1
+    cd
+    wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh -O tools.sh &> /dev/null
+    chmod +x tools.sh 
+    bash tools.sh
+    sudo apt install at -y >/dev/null 2>&1
+    wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
+    clear
+    start=$(date +%s)
+    ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+    apt install git curl -y >/dev/null 2>&1
+    apt install python -y >/dev/null 2>&1
 }
+
+# Jalankan fungsi dengan pengecekan error
+pointingdomain || { echo "Pointing domain gagal. Keluar..."; exit 1; }
+Dependencies
+
 
 function Installasi(){
 animation_loading() {
@@ -478,9 +487,6 @@ fi
 
 # Terapkan perubahan
 sysctl -p >/dev/null 2>&1
-
-# install dependencies
-Dependencies
 # installer
 Installasi
 
