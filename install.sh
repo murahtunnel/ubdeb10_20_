@@ -186,20 +186,6 @@ clear
 
 domain_setup
 
-# install dependencies
-function Dependencies() {
-cd
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh &> /dev/null
-
-wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
-
-clear
-start=$(date +%s)
-ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-apt install git curl -y >/dev/null 2>&1
-apt install python -y >/dev/null 2>&1
-}
-
 function Installasi(){
 animation_loading() {
     CMD[0]="$1"
@@ -243,6 +229,18 @@ animation_loading() {
     tput cnorm # Tampilkan kursor kembali
 }
 
+TOOLS_PKG() {
+cd
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh &> /dev/null
+
+wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
+
+clear
+start=$(date +%s)
+ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+apt install git curl -y >/dev/null 2>&1
+apt install python -y >/dev/null 2>&1
+}
 
 INSTALL_SSH() {
 
@@ -329,6 +327,11 @@ fi
 
 function UNTUK_DEBIAN(){
 lane_atas
+echo -e "${c}│      ${g}PROCESS INSTAKKED MODUL PACKAGE${NC}     ${c}│${NC}"
+lane_bawah
+animation_loading 'TOOLS_PKG'
+
+lane_atas
 echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
 lane_bawah
 animation_loading 'INSTALL_SSH'
@@ -366,6 +369,11 @@ animation_loading 'INSTALL_UDP_CUSTOM'
 }
 
 function UNTUK_UBUNTU(){
+lane_atas
+echo -e "${c}│      ${g}PROCESS INSTAKKED MODUL PACKAGE${NC}     ${c}│${NC}"
+lane_bawah
+animation_loading 'TOOLS_PKG'
+
 lane_atas
 echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
 lane_bawah
@@ -447,7 +455,7 @@ wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/install_cron
 clear
 }
 
-Dependencies
+
 Installasi
 install_crond
 
