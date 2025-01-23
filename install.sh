@@ -130,7 +130,7 @@ exit 1
 fi
 
 function MakeDirectories() {
-cd
+    cd
     # Membuat direktori yang diperlukan
     mkdir -p /etc/xray
     mkdir -p /var/lib/LT/ >/dev/null 2>&1
@@ -364,10 +364,10 @@ clear
 }
 
 if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
-echo -e "${g}Setup OS $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
+echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
 UNTUK_UBUNTU
 elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
-echo -e "${g}Setup OS $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
+echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
 UNTUK_DEBIAN
 else
 echo -e " Your OS Is Not Supported ( ${YELLOW}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${FONT} )"
@@ -492,12 +492,17 @@ sysctl -p >/dev/null 2>&1
 Dependencies
 Installasi
 
+    cat >/etc/cron.d/xp_all <<-END
+		SHELL=/bin/sh
+		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+		2 0 * * * root /usr/bin/xp
+	END
     cat >/etc/cron.d/logclean <<-END
 		SHELL=/bin/sh
 		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 		*/59 * * * * root /usr/bin/logclean
 	END
-    cat >/etc/cron.d/daily_reboot <<-END
+	    cat >/etc/cron.d/daily_reboot <<-END
 		SHELL=/bin/sh
 		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 		0 5 * * * /sbin/reboot
@@ -555,10 +560,11 @@ curl -s ipinfo.io/org?token=75082b4831f909  | cut -d " " -f 2-10 >> /etc/xray/is
 rm -f /root/*.sh
 rm -f /root/*.txt
 
-function Send_Notifications() {
+
 CHATID="7428226275"
 KEY="7382456251:AAFFC-8A6VsotlfAQj6MXe4Mff-7MNX5yRs"
 URL="https://api.telegram.org/bot$KEY/sendMessage"
+
 TEXT="
 <code>= = = = = = = = = = = = =</code>
 <b>   🧱 AUTOSCRIPT PREMIUM 🧱 </b>
@@ -579,7 +585,6 @@ curl -s --max-time 10 -X POST "$URL" \
 -d "parse_mode=HTML" \
 -d "disable_web_page_preview=true" \
 -d "reply_markup={\"inline_keyboard\":[[{\"text\":\" ʙᴜʏ ꜱᴄʀɪᴘᴛ \",\"url\":\"https://t.me/ian_khvicha\"}]]}"
-}
 
 cd
 rm ~/.bash_history
@@ -592,9 +597,8 @@ echo -e "${c}┌─────────────────────�
 echo -e "${c}│  ${g}INSTALL SCRIPT SELESAI..${NC}                  ${c}│${NC}"
 echo -e "${c}└────────────────────────────────────────────┘${NC}"
 echo  ""
-echo -e "\e[92;1mTunggu! dalam 3 detik akan Melakukan reboot.... \e[0m"
+echo -e "\e[92;1m dalam 3 detik akan Melakukan reboot.... \e[0m"
 sleep 3
 
-Send_Notifications
 # Langsung reboot
 reboot
