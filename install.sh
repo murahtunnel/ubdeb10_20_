@@ -227,6 +227,7 @@ MakeDirectories
     echo ""
     echo -e "\e[96;1mYour Domain:\e[0m ${dns}"
 
+function DEPENDENCIES_INSTALL() {
 # Fungsi untuk instalasi dependencies
     cd
     wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh -O tools.sh &> /dev/null
@@ -239,7 +240,7 @@ MakeDirectories
     ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
     apt install git curl -y >/dev/null 2>&1
     apt install python -y >/dev/null 2>&1
-
+}
 # mulai instal packet yg di butuhkan
 function Installasi(){
 animation_loading() {
@@ -475,6 +476,9 @@ fi
 
 # Terapkan perubahan
 sysctl -p >/dev/null 2>&1
+
+# tools install
+DEPENDENCIES_INSTALL
 # installer
 Installasi
 
