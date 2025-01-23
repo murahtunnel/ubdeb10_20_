@@ -67,21 +67,6 @@ checking_sc() {
     echo -e "\033[96m============================================\033[0m"
     echo -e "\e[95;1m buy / sewa AutoScript installer VPS \e[0m"
     echo -e "\033[96m============================================\033[0m"
-    echo -e "\e[93;1m
-    Support All OS : 
-    ubuntu 20,22,24
-    debian 10,11,12 \e[0m"
-    echo -e "\033[96m============================================\033[0m"    
-    echo -e "\e[92;1m
-    full fitur :
-    autokill,autolock SSH X-Ray
-    limit-IP,limit-BW SSH X-ray
-    change-UUID (husus xray)
-    Rebuild-VPS,
-    monitor-VPS,monitor-USER
-    backup-DATA,restore-DATA
-    Scripts-ENCRYPT,scripts-DECRYPT
-    masih banyak Lagi..\e[0m"
     echo -e "\033[96m============================================\033[0m"    
     echo -e "\e[96;1m   1 IP        : Rp.10.000   \e[0m"
     echo -e "\e[96;1m   2 IP        : Rp.15.000   \e[0m"   
@@ -190,7 +175,25 @@ function MakeDirectories() {
     echo "& plughin Account" >>/etc/lunatic/trojan/.trojan.db
     echo "& plughin Account" >>/etc/lunatic/ssh/.ssh.db
 }
-function pointingdomain() {
+
+function Dependencies() {
+cd
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh &> /dev/null
+chmod +x tools.sh 
+bash tools.sh
+sudo apt install at -y >/dev/null 2>&1
+
+wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
+
+clear
+start=$(date +%s)
+ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+apt install git curl -y >/dev/null 2>&1
+apt install python -y >/dev/null 2>&1
+}
+
+function Run_First_INSTALL() {
+MakeDirectories
     if [ -f /etc/xray/domain ] && [ -s /etc/xray/domain ]; then
         echo "Domain sudah ada, melewati proses pointing."
         return
@@ -236,27 +239,10 @@ function pointingdomain() {
     clear
     echo ""
     echo -e "\e[96;1mYour Domains:\e[0m ${dns}"
-MakeDirectories
+Dependencies
 }
 
-pointingdomain
-
-# install dependencies
-function Dependencies() {
-cd
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh &> /dev/null
-chmod +x tools.sh 
-bash tools.sh
-sudo apt install at -y >/dev/null 2>&1
-
-wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
-
-clear
-start=$(date +%s)
-ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-apt install git curl -y >/dev/null 2>&1
-apt install python -y >/dev/null 2>&1
-}
+Run_First_INSTALL
 
 function Installasi(){
 animation_loading() {
@@ -493,7 +479,7 @@ fi
 # Terapkan perubahan
 sysctl -p >/dev/null 2>&1
 
-Dependencies
+# installer
 Installasi
 
     cat >/etc/cron.d/logclean <<-END
