@@ -132,7 +132,6 @@ fi
 function MakeDirectories() {
     cd
     # Membuat direktori yang diperlukan
-    mkdir -p /etc/xray
     mkdir -p /var/lib/LT/ >/dev/null 2>&1
     echo "IP=" >> /var/lib/LT/ipvps.conf
     touch /etc/.{ssh,vmess,vless,trojan}.db
@@ -174,22 +173,6 @@ function MakeDirectories() {
     echo "& plughin Account" >>/etc/lunatic/vless/.vless.db
     echo "& plughin Account" >>/etc/lunatic/trojan/.trojan.db
     echo "& plughin Account" >>/etc/lunatic/ssh/.ssh.db
-}
-
-function Dependencies() {
-cd
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh &> /dev/null
-chmod +x tools.sh 
-bash tools.sh
-sudo apt install at -y >/dev/null 2>&1
-
-wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
-
-clear
-start=$(date +%s)
-ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-apt install git curl -y >/dev/null 2>&1
-apt install python -y >/dev/null 2>&1
 }
 
 function Run_First_INSTALL() {
@@ -239,10 +222,27 @@ MakeDirectories
     clear
     echo ""
     echo -e "\e[96;1mYour Domains:\e[0m ${dns}"
-Dependencies
+    
 }
 
 Run_First_INSTALL
+
+
+function Dependencies() {
+cd
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh &> /dev/null
+chmod +x tools.sh 
+bash tools.sh
+sudo apt install at -y >/dev/null 2>&1
+
+wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
+
+clear
+start=$(date +%s)
+ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+apt install git curl -y >/dev/null 2>&1
+apt install python -y >/dev/null 2>&1
+}
 
 function Installasi(){
 animation_loading() {
@@ -479,6 +479,8 @@ fi
 # Terapkan perubahan
 sysctl -p >/dev/null 2>&1
 
+# install dependencies
+Dependencies
 # installer
 Installasi
 
