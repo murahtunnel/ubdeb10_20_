@@ -66,7 +66,6 @@ checking_sc() {
     echo -e "\033[44;37m           NotAllowed Autoscript            \033[0m"    
     echo -e "\033[96m============================================\033[0m"
     echo -e "\e[95;1m buy / sewa AutoScript installer VPS \e[0m"
-    echo -e "\033[96m============================================\033[0m"
     echo -e "\033[96m============================================\033[0m"    
     echo -e "\e[96;1m   1 IP        : Rp.10.000   \e[0m"
     echo -e "\e[96;1m   2 IP        : Rp.15.000   \e[0m"   
@@ -74,7 +73,8 @@ checking_sc() {
     echo -e "\e[96;1m   Unli IP     : Rp.150.000  \e[0m"
     echo -e "\e[97;1m   open source : Rp.400.000  \e[0m"       
     echo -e ""
-    echo -e "\033[34m Contack WA/TLP: 083197765857 \033[0m"
+    echo -e "\033[34m Contack WA/TLP: 083197765857     \033[0m"
+    echo -e "\033[34m Telegram user : t.me/ian_khvicha \033[0m"    
     echo -e "\033[96m============================================\033[0m"
     exit 0
   fi
@@ -132,6 +132,7 @@ fi
 function MakeDirectories() {
     cd
     # Membuat direktori yang diperlukan
+    mkdir -p /etc/xray
     mkdir -p /var/lib/LT/ >/dev/null 2>&1
     echo "IP=" >> /var/lib/LT/ipvps.conf
     touch /etc/.{ssh,vmess,vless,trojan}.db
@@ -143,6 +144,8 @@ function MakeDirectories() {
     mkdir -p /etc/lunatic/trojan/ip
     mkdir -p /etc/lunatic/ssh/ip
     mkdir -p /etc/lunatic/bot
+    mkdir -p /etc/lunatic/bot/notif
+    
 # limit quota xray   
     mkdir -p /etc/lunatic/vmess/usage
     mkdir -p /etc/lunatic/vless/usage
@@ -164,7 +167,6 @@ function MakeDirectories() {
     mkdir -p /etc/vless
     mkdir -p /etc/trojan
     mkdir -p /etc/ssh
-    
     touch /etc/lunatic/vmess/.vmess.db
     touch /etc/lunatic/vless/.vless.db
     touch /etc/lunatic/trojan/.trojan.db
@@ -174,35 +176,36 @@ function MakeDirectories() {
     echo "& plughin Account" >>/etc/lunatic/vless/.vless.db
     echo "& plughin Account" >>/etc/lunatic/trojan/.trojan.db
     echo "& plughin Account" >>/etc/lunatic/ssh/.ssh.db
+
 }
 
+# call function
 MakeDirectories
 
-# Fungsi untuk pointing domain
+cat > /usr/bin/pointing_DOMAINS << END
+#!/bin/bash
+clear
+
+    if [ -f /etc/xray/domain ] && [ -s /etc/xray/domain ]; then
+        echo "Domain sudah ada, melewati proses pointing."
+        return
+    fi
+
     apt update
     apt install jq curl -y
-
     DOMAIN=klmpk.my.id
     sub=$(head /dev/urandom | tr -dc a-z0-9 | head -c 8)
     dns=${sub}.${DOMAIN}
-    CF_KEY="9d25535086484fb695ab64a70a70532a32fd4"
-    CF_ID="andyyuda41@gmail.com"
-    IP=$(curl -s ifconfig.me)
-
+    CF_KEY=9d25535086484fb695ab64a70a70532a32fd4
+    CF_ID=andyyuda41@gmail.com
     set -euo pipefail
     echo ""
-    echo "Membuat Domain VPS ${dns}..."
+    echo "Proses Pointing Domain ${dns}..."
     sleep 1
-
     ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
          -H "X-Auth-Email: ${CF_ID}" \
          -H "X-Auth-Key: ${CF_KEY}" \
          -H "Content-Type: application/json" | jq -r .result[0].id)
-
-    if [[ -z "$ZONE" || "$ZONE" == "null" ]]; then
-        echo "Gagal mendapatkan Zone ID dari Cloudflare."
-        exit 1
-    fi
 
     RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${dns}" \
          -H "X-Auth-Email: ${CF_ID}" \
@@ -210,38 +213,47 @@ MakeDirectories
          -H "Content-Type: application/json" | jq -r .result[0].id)
 
     if [[ "${#RECORD}" -le 10 ]]; then
-        RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
-            -H "X-Auth-Email: ${CF_ID}" \
-            -H "X-Auth-Key: ${CF_KEY}" \
-            -H "Content-Type: application/json" \
-            --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":true}' | jq -r .result.id)
+         RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+         -H "X-Auth-Email: ${CF_ID}" \
+         -H "X-Auth-Key: ${CF_KEY}" \
+         -H "Content-Type: application/json" \
+         --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":true}' | jq -r .result.id)
     fi
 
-    if [[ -z "$RECORD" || "$RECORD" == "null" ]]; then
-        echo "Gagal membuat DNS record di Cloudflare."
-        exit 1
-    fi
+    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+         -H "X-Auth-Email: ${CF_ID}" \
+         -H "X-Auth-Key: ${CF_KEY}" \
+         -H "Content-Type: application/json" \
+         --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":true}')
 
+    # Menyimpan domain ke /etc/xray/domain hanya jika tidak ada
     echo "$dns" > /etc/xray/domain
     clear
     echo ""
-    echo -e "\e[96;1mYour Domain:\e[0m ${dns}"
+    echo -e "\e[96;1mYour Domains:\e[0m ${dns}"
+END
 
-function DEPENDENCIES_INSTALL() {
-# Fungsi untuk instalasi dependencies
-    cd
-    wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh -O tools.sh &> /dev/null
-    chmod +x tools.sh 
-    bash tools.sh
-    sudo apt install at -y >/dev/null 2>&1
-    wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
-    clear
-    start=$(date +%s)
-    ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-    apt install git curl -y >/dev/null 2>&1
-    apt install python -y >/dev/null 2>&1
+chmod +x /usr/bin/pointing_DOMAINS
+
+
+# install dependencies
+function Dependencies() {
+pointing_DOMAINS
+
+cd
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh &> /dev/null
+chmod +x tools.sh && ./tools.sh && rm -rf tools.sh
+sudo apt install at -y >/dev/null 2>&1
+
+wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
+
+clear
+start=$(date +%s)
+ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+apt install git curl -y >/dev/null 2>&1
+apt install python -y >/dev/null 2>&1
 }
-# mulai instal packet yg di butuhkan
+
 function Installasi(){
 animation_loading() {
     CMD[0]="$1"
@@ -325,7 +337,7 @@ clear
 INSTALL_BACKUP() {
 apt install rclone
 printf "q\n" | rclone config
-wget -O /root/.config/rclone/rclone.conf "https://github.com/Andyyuda/vip/raw/main/limit/rclone.conf"
+wget -O /root/.config/rclone/rclone.conf "https://github.com/murahtunnel/ubdeb10_20_/raw/main/rclone.conf"
 git clone  https://github.com/murahtunnel/wondershaper.git
 cd wondershaper
 make install
@@ -341,7 +353,7 @@ wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/ohp.sh &&
 clear
 }
 
-menu() {
+INSTALL_FEATURE() {
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/menu/install_menu.sh && chmod +x install_menu.sh && ./install_menu.sh
 clear
 }
@@ -391,7 +403,7 @@ animation_loading 'INSTALL_OHP'
 lane_atas
 echo -e "${c}│           ${g}DOWNLOAD EXTRA MENU${NC}${c}            │${NC}"
 lane_bawah
-animation_loading 'menu'
+animation_loading 'INSTALL_FEATURE'
 
 lane_atas
 echo -e "${c}│           ${g}DOWNLOAD UDP CUSTOM${NC}${c}            │${NC}"
@@ -429,7 +441,7 @@ animation_loading 'INSTALL_OHP'
 lane_atas
 echo -e "${c}│           ${g}DOWNLOAD EXTRA MENU${NC}${c}            │${NC}"
 lane_bawah
-animation_loading 'menu'
+animation_loading 'INSTALL_FEATURE'
 
 lane_atas
 echo -e "${c}│           ${g}DOWNLOAD UDP CUSTOM${NC}${c}            │${NC}"
@@ -477,11 +489,14 @@ fi
 # Terapkan perubahan
 sysctl -p >/dev/null 2>&1
 
-# tools install
-DEPENDENCIES_INSTALL
-# installer
+Dependencies
 Installasi
 
+    cat >/etc/cron.d/xp_all <<-END
+		SHELL=/bin/sh
+		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+		2 0 * * * root /usr/bin/xp
+	END
     cat >/etc/cron.d/logclean <<-END
 		SHELL=/bin/sh
 		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
@@ -492,19 +507,10 @@ Installasi
 		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 		0 5 * * * /sbin/reboot
 	END
-    cat >/etc/cron.d/autobackup <<-END
+    cat >/etc/cron.d/autobackuo <<-END
 		SHELL=/bin/sh
 		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 		2 0 * * * root /usr/local/sbin/autobackup
-	END
-    cat >/etc/cron.d/kill_exp <<-END
-                SHELL=/bin/bash
-                PATH=/sbin:/bin:/usr/sbin:/usr/bin
-                */1 * * * * root /usr/local/sbin/kill_expired exp
-                */1 * * * * root /usr/local/sbin/kill_expired ssh
-                */1 * * * * root /usr/local/sbin/kill_expired vm
-                */1 * * * * root /usr/local/sbin/kill_expired vl
-                */1 * * * * root /usr/local/sbin/kill_expired tr
 	END
 
 cat> /root/.profile << END
@@ -552,16 +558,17 @@ URL="https://api.telegram.org/bot$KEY/sendMessage"
 
 TEXT="
 <code>= = = = = = = = = = = = =</code>
-<b>            Notifications   </b>
+<b>   🧱 AUTOSCRIPT PREMIUM 🧱 </b>
+<b>        Notifications       </b>
 <code>= = = = = = = = = = = = =</code>
-<b>ISP VPS    :</b> <code>$ISP</code>
-<b>SERVER VPS :</b> <code>$CITY</code>
-<b>TIMES REAL :</b> <code>$time</code>
-<b>SCRIPT KEY :</b> <code>$client</code>
-<b>SCRIPT EXP :</b> <code>$exp</code>
-<b>SCRIPT REG :</b> <code>$date</code>
-<b= = = = = = = = = = = = =</b>
-<b>LUNATIC TUNNELING SCRIPTS</b>
+<b>Client  :</b> <code>$client</code>
+<b>ISP     :</b> <code>$ISP</code>
+<b>Country :</b> <code>$CITY</code>
+<b>DATE    :</b> <code>$date</code>
+<b>Time    :</b> <code>$time</code>
+<b>Expired :</b> <code>$exp</code>
+<code>= = = = = = = = = = = = =</code>
+<i><b>       MURAH TUNNEL      </b></i>
 <code>= = = = = = = = = = = = =</code>"
 curl -s --max-time 10 -X POST "$URL" \
 -d "chat_id=$CHATID" \
