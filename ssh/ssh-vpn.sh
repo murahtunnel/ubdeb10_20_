@@ -1,5 +1,42 @@
 #!/bin/bash
 rm -f $0
+
+data_server=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
+date_list=$(date +"%Y-%m-%d" -d "$data_server")
+url_izin="https://raw.githubusercontent.com/murahtunnel/vps_access/main/ip"
+client=$(curl -sS $url_izin | grep $IP | awk '{print $2}')
+exp=$(curl -sS $url_izin | grep $IP | awk '{print $3}')
+today=`date -d "0 days" +"%Y-%m-%d"`
+time=$(printf '%(%H:%M:%S)T')
+date=$(date +'%d-%m-%Y')
+d1=$(date -d "$exp" +%s)
+d2=$(date -d "$today" +%s)
+certifacate=$(((d1 - d2) / 86400))
+checking_sc() {
+  useexp=$(curl -s $url_izin | grep $IP | awk '{print $3}')
+  if [[ $date_list < $useexp ]]; then
+    echo -ne
+  else
+    clear
+    echo -e "\033[96m============================================\033[0m"
+    echo -e "\033[44;37m           NotAllowed Autoscript         \033[0m"    
+    echo -e "\033[96m============================================\033[0m"
+    echo -e "\e[95;1m buy / sewa AutoScript installer VPS \e[0m"
+    echo -e "\033[96m============================================\033[0m"    
+    echo -e "\e[96;1m   1 IP        : Rp.10.000   \e[0m"
+    echo -e "\e[96;1m   2 IP        : Rp.15.000   \e[0m"   
+    echo -e "\e[96;1m   7 IP        : Rp.40.000   \e[0m"
+    echo -e "\e[96;1m   Unli IP     : Rp.150.000  \e[0m"
+    echo -e "\e[97;1m   open source : Rp.400.000  \e[0m"       
+    echo -e ""
+    echo -e "\033[34m Contack WA/TLP: +62 859-3192-5073     \033[0m"
+    echo -e "\033[96m============================================\033[0m"
+    exit 0
+  fi
+}
+checking_sc
+
+
 apt dist-upgrade -y
 apt install netfilter-persistent -y
 apt-get remove --purge ufw firewalld -y
