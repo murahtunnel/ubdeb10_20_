@@ -1,16 +1,12 @@
 #!/bin/bash
 
-# install curl , wget , jq 
 rm -f $0
 
-echo -e "\e[92;1m UPDATES.... \033[0m"
-apt update >/dev/null 2>&1
-apt install curl -y >/dev/null 2>&1
-apt install wget -y >/dev/null 2>&1
-apt install jq -y >/dev/null 2>&1
-apt install git -y >/dev/null 2>&1
+apt update
+apt install curl -y
+apt install wget -y
+apt install jq -y
 
-clear
 NC='\033[0m'
 rbg='\033[41;37m'
 r='\033[1;91m'
@@ -21,7 +17,7 @@ c='\033[0;96m'
 w='\033[1;97m'
 
 if [ "${EUID}" -ne 0 ]; then
-echo "${r}You need to run this script as root\e[0m"
+echo "${r}You need to run this script as root${NC}"
 sleep 2
 exit 0
 fi
@@ -42,15 +38,15 @@ export CITY=$(cat /root/.city);
 source /etc/os-release
 
 function lane_atas() {
-echo -e "\033[38;5;160m┌──────────────────────────────────────────┐\e[0m"
+echo -e "${c}┌──────────────────────────────────────────┐${NC}"
 }
 function lane_bawah() {
-echo -e "\033[38;5;160m└──────────────────────────────────────────┘\e[0m"
+echo -e "${c}└──────────────────────────────────────────┘${NC}"
 }
 
 data_server=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
 date_list=$(date +"%Y-%m-%d" -d "$data_server")
-url_izin="https://raw.githubusercontent.com/murahtunnel/vps_access/main/ip"
+url_izin="https://raw.githubusercontent.com/ianlunatixxx/vps_access/main/ip"
 client=$(curl -sS $url_izin | grep $IP | awk '{print $2}')
 exp=$(curl -sS $url_izin | grep $IP | awk '{print $3}')
 today=`date -d "0 days" +"%Y-%m-%d"`
@@ -76,18 +72,19 @@ checking_sc() {
     echo -e "\e[96;1m   Unli IP     : Rp.150.000  \e[0m"
     echo -e "\e[97;1m   open source : Rp.400.000  \e[0m"       
     echo -e ""
-    echo -e "\033[34m Contack WA/TLP: 085955333616     \033[0m"
+    echo -e "\033[34m Contack WA/TLP: 083197765857     \033[0m"
     echo -e "\033[34m Telegram user : t.me/ian_khvicha \033[0m"    
     echo -e "\033[96m============================================\033[0m"
     exit 0
   fi
 }
+checking_sc
 
 function ARCHITECTURE() {
 if [[ "$( uname -m | awk '{print $1}' )" == "x86_64" ]]; then
     echo -ne
 else
-    echo -e "${r} Your Architecture Is Not Supported ( ${y}$( uname -m )\e[0m )"
+    echo -e "${r} Your Architecture Is Not Supported ( ${y}$( uname -m )${NC} )"
     exit 1
 fi
 
@@ -96,15 +93,15 @@ if [[ ${ID} == "ubuntu" || ${ID} == "debian" ]]; then
 else
     echo -e " ${r}This Script only Support for OS"
     echo -e ""
-    echo -e " - ${y}Ubuntu 20.04\e[0m"
-    echo -e " - ${y}Ubuntu 21.04\e[0m"
-    echo -e " - ${y}Ubuntu 22.04\e[0m"
-    echo -e " - ${y}Ubuntu 23.04\e[0m"
-    echo -e " - ${y}Ubuntu 24.04\e[0m"
+    echo -e " - ${y}Ubuntu 20.04${NC}"
+    echo -e " - ${y}Ubuntu 21.04${NC}"
+    echo -e " - ${y}Ubuntu 22.04${NC}"
+    echo -e " - ${y}Ubuntu 23.04${NC}"
+    echo -e " - ${y}Ubuntu 24.04${NC}"
     echo ""
-    echo -e " - ${y}Debian 10\e[0m"
-    echo -e " - ${y}Debian 11\e[0m"
-    echo -e " - ${y}Debian 12\e[0m"
+    echo -e " - ${y}Debian 10${NC}"
+    echo -e " - ${y}Debian 11${NC}"
+    echo -e " - ${y}Debian 12${NC}"
     Credit_Sc
     exit 0
 fi
@@ -114,15 +111,15 @@ if [[ ${VERSION_ID} == "10" || ${VERSION_ID} == "11" || ${VERSION_ID} == "12" ||
 else
     echo -e " ${r}This Script only Support for OS"
     echo -e ""
-    echo -e " - ${y}Ubuntu 20.04\e[0m"
-    echo -e " - ${y}Ubuntu 21.04\e[0m"
-    echo -e " - ${y}Ubuntu 22.04\e[0m"
-    echo -e " - ${y}Ubuntu 23.04\e[0m"
-    echo -e " - ${y}Ubuntu 24.04\e[0m"
+    echo -e " - ${y}Ubuntu 20.04${NC}"
+    echo -e " - ${y}Ubuntu 21.04${NC}"
+    echo -e " - ${y}Ubuntu 22.04${NC}"
+    echo -e " - ${y}Ubuntu 23.04${NC}"
+    echo -e " - ${y}Ubuntu 24.04${NC}"
     echo ""
-    echo -e " - ${y}Debian 10\e[0m"
-    echo -e " - ${y}Debian 11\e[0m"
-    echo -e " - ${y}Debian 12\e[0m"
+    echo -e " - ${y}Debian 10${NC}"
+    echo -e " - ${y}Debian 11${NC}"
+    echo -e " - ${y}Debian 12${NC}"
     Credit_Sc
     exit 0
 fi
@@ -135,8 +132,6 @@ fi
 
 # call
 ARCHITECTURE
-
-checking_sc
 
 function MakeDirectories() {
     # Direktori utama
@@ -184,86 +179,66 @@ function MakeDirectories() {
 MakeDirectories
 
 
-
-
 function domain_setup(){
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/domains.sh && chmod +x domains.sh && ./domains.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/domains.sh && chmod +x domains.sh && ./domains.sh
 clear
 }
 
 domain_setup
 
+function Installasi(){
+animation_loading() {
+    CMD[0]="$1"
+    CMD[1]="$2"
+    
+    (
+        # Hapus file fim jika ada
+        [[ -e $HOME/fim ]] && rm -f $HOME/fim
+        
+        # Jalankan perintah di background dan sembunyikan output
+        ${CMD[0]} -y >/dev/null 2>&1
+        ${CMD[1]} -y >/dev/null 2>&1
+        
+        # Buat file fim untuk menandakan selesai
+        touch $HOME/fim
+    ) >/dev/null 2>&1 &
 
-function INSTALL_SCRIPTS() {
-LOADING_ANIMATIONS() {
-  local pid=$1
-  local delay=0.1
-  local spin='-\|/'
-
-  while ps -p $pid > /dev/null; do
-    local temp=${spin#?}
-    printf "[%c] " "$spin"
-    local spin=$temp${spin%"$temp"}
-    sleep $delay
-    printf "\b\b\b\b\b\b"
-  done
-
-  printf "    \b\b\b\b"
+    tput civis # Sembunyikan kursor
+    echo -ne "  \033[0;33mProcessed Install \033[1;37m- \033[0;33m["
+    
+    while true; do
+        for ((i = 0; i < 18; i++)); do
+            echo -ne "\033[0;32m#"
+            sleep 0.1
+        done
+        
+        # Jika file fim ada, hapus dan keluar dari loop
+        if [[ -e $HOME/fim ]]; then
+            rm -f $HOME/fim
+            break
+        fi
+        
+        echo -e "\033[0;33m]"
+        sleep 1
+        tput cuu1 # Kembali ke baris sebelumnya
+        tput dl1   # Hapus baris sebelumnya
+        echo -ne "  \033[0;33mProcessed Install \033[1;37m- \033[0;33m["
+    done
+    
+    echo -e "\033[0;33m]\033[1;37m -\033[1;32m Succes !\033[1;37m"
+    tput cnorm # Tampilkan kursor kembali
 }
 
-function TOOLS_PKG() {
+TOOLS_PKG() {
 cd
-#wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh &> /dev/null
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh &> /dev/null
 
-clear
-red='\e[1;31m'
-green2='\e[1;32m'
-yell='\e[1;33m'
-NC='\e[0m'
-green() { echo -e "\\033[32;1m${*}\\033[0m"; }
-red() { echo -e "\\033[31;1m${*}\\033[0m"; }
-
-echo "Process Install Dependencies"
-sleep 1
-apt update -y
-apt upgrade -y
-apt dist-upgrade -y
-apt install sudo -y
-sudo apt-get clean all
-apt install -y debconf-utils
-apt install haproxy -y
-apt install p7zip-full -y
-apt-get remove --purge ufw firewalld -y
-apt-get remove --purge exim4 -y
-apt-get autoremove -y
-apt install -y --no-install-recommends software-properties-common
-echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
-echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
-sudo DEBIAN_FRONTEND=noninteractive apt-get -y install iptables iptables-persistent netfilter-persistent figlet ruby libxml-parser-perl squid nmap screen curl jq bzip2 gzip coreutils rsyslog iftop htop zip unzip net-tools sed gnupg gnupg1 bc apt-transport-https build-essential dirmngr libxml-parser-perl neofetch screenfetch lsof openssl openvpn easy-rsa fail2ban tmux stunnel4 squid dropbear socat cron bash-completion ntpdate xz-utils apt-transport-https gnupg2 dnsutils lsb-release chrony libnss3-dev libnspr4-dev pkg-config libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev libcurl4-openssl-dev flex bison make libnss3-tools libevent-dev xl2tpd apt git speedtest-cli p7zip-full libjpeg-dev zlib1g-dev python-is-python3 python3-pip shc build-essential nodejs nginx php php-fpm php-cli php-mysql p7zip-full squid libcurl4-openssl-dev
-gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
-gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/gotop_v"$gotop_latest"_linux_amd64.deb"
-curl -sL "$gotop_link" -o /tmp/gotop.deb
-dpkg -i /tmp/gotop.deb
-
-# remove unnecessary files
-sudo apt-get autoclean -y >/dev/null 2>&1
-audo apt-get -y --purge removd unscd >/dev/null 2>&1
-sudo apt-get -y --purge remove samba* >/dev/null 2>&1
-sudo apt-get -y --purge remove apache2* >/dev/null 2>&1
-sudo apt-get -y --purge remove bind9* >/dev/null 2>&1
-sudo apt-get -y remove sendmail* >/dev/null 2>&1
-apt autoremove -y >/dev/null 2>&1
-# finishing
-
-yellow() { echo -e "\\033[33;1m${*}\\033[0m"; }
-yellow "Dependencies successfully installed..."
-sleep 1.5
-
-wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
+wget -q -O /etc/port.txt "https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/PACKAGES/port.txt"
 
 clear
 start=$(date +%s)
 ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+apt install git curl -y >/dev/null 2>&1
 apt install python -y >/dev/null 2>&1
 }
 
@@ -272,7 +247,7 @@ INSTALL_SSH() {
 # install at untuk meng kill triall ssh
 sudo apt install at -y >/dev/null 2>&1
 
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ssh/ssh-vpn.sh && chmod +x ssh-vpn.sh && ./ssh-vpn.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/ssh/ssh-vpn.sh && chmod +x ssh-vpn.sh && ./ssh-vpn.sh
 
 # installer gotop
 gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
@@ -286,15 +261,15 @@ clear
 INSTALL_XRAY() {
 
 # install semua kebutuhan xray
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/xray/ins-xray.sh && chmod +x ins-xray.sh && ./ins-xray.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/xray/ins-xray.sh && chmod +x ins-xray.sh && ./ins-xray.sh
 clear
 
 # limit quota & service xray
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/Xbw_LIMIT/install.sh && chmod +x install.sh && ./install.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/Xbw_LIMIT/install.sh && chmod +x install.sh && ./install.sh
 clear
 
 # limit service ip xray
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/AUTOKILL_SERVICE/service.sh && chmod +x service.sh && ./service.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/AUTOKILL_SERVICE/service.sh && chmod +x service.sh && ./service.sh
 clear
 
 }
@@ -302,19 +277,19 @@ clear
 INSTALL_WEBSOCKET() {
 
 # install-ws
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/install-ws.sh && chmod +x install-ws.sh && ./install-ws.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/ws/install-ws.sh && chmod +x install-ws.sh && ./install-ws.sh
 clear
 
 # banner ssh
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/banner_ssh.sh && chmod +x banner_ssh.sh && ./banner_ssh.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/ws/banner_ssh.sh && chmod +x banner_ssh.sh && ./banner_ssh.sh
 clear
 }
 
 INSTALL_BACKUP() {
 apt install rclone
 printf "q\n" | rclone config
-wget -O /root/.config/rclone/rclone.conf "https://github.com/murahtunnel/ubdeb10_20_/raw/main/rclone.conf"
-git clone  https://github.com/murahtunnel/wondershaper.git
+wget -O /root/.config/rclone/rclone.conf "https://github.com/ianlunatixxx/ubdeb10_20_/raw/main/rclone.conf"
+git clone  https://github.com/ianlunatixxx/wondershaper.git
 cd wondershaper
 make install
 cd
@@ -325,25 +300,25 @@ rm -f /root/limit.sh
 }
 
 INSTALL_OHP() {
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/ohp.sh && chmod +x ohp.sh && ./ohp.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/ws/ohp.sh && chmod +x ohp.sh && ./ohp.sh
 clear
 }
 
 INSTALL_FEATURE() {
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/menu/install_menu.sh && chmod +x install_menu.sh && ./install_menu.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/menu/install_menu.sh && chmod +x install_menu.sh && ./install_menu.sh
 clear
 }
 
 INSTALL_UDP_CUSTOM() {
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/UDP.sh && chmod +x UDP.sh && ./UDP.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/ws/UDP.sh && chmod +x UDP.sh && ./UDP.sh
 clear
 }
 
 if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
-echo -e "\033[38;5;227mSetup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')\e[0m"
+echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
 UNTUK_UBUNTU
 elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
-echo -e "\033[38;5;227mSetup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')\e[0m"
+echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
 UNTUK_DEBIAN
 else
 echo -e " Your OS Is Not Supported ( ${YELLOW}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${FONT} )"
@@ -351,87 +326,88 @@ fi
 }
 
 function UNTUK_DEBIAN(){
-
-# install toolss
-TOOLS_PKG
-
-clear
 lane_atas
-echo -e "\033[38;5;160m│      \033[38;5;227mPROCESS INSTALLED SSH & OPENVPN\e[0m     \033[38;5;160m│\e[0m"
+echo -e "${c}│      ${g}PROCESS INSTAKKED MODUL PACKAGE${NC}     ${c}│${NC}"
 lane_bawah
-'INSTALL_SSH' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'TOOLS_PKG'
 
 lane_atas
-echo -e "\033[38;5;160m│           \033[38;5;227mPROCESS INSTALLED XRAY\e[0m         \033[38;5;160m│\e[0m"
+echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
 lane_bawah
-'INSTALL_XRAY' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_SSH'
 
 lane_atas
-echo -e "\033[38;5;160m│       \033[38;5;227mPROCESS INSTALLED WEBSOCKET SSH\e[0m    \033[38;5;160m│\e[0m"
+echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
 lane_bawah
-'INSTALL_WEBSOCKET' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_XRAY'
 
 lane_atas
-echo -e "\033[38;5;160m│       \033[38;5;227mPROCESS INSTALLED BACKUP MENU\e[0m\033[38;5;160m      │\e[0m"
+echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
 lane_bawah
-'INSTALL_BACKUP' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_WEBSOCKET'
 
 lane_atas
-echo -e "\033[38;5;160m│           \033[38;5;227mPROCESS INSTALLED OHP\e[0m\033[38;5;160m          │\e[0m"
+echo -e "${c}│       ${g}PROCESS INSTALLED BACKUP MENU${NC}${c}      │${NC}"
 lane_bawah
-'INSTALL_OHP' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_BACKUP'
 
 lane_atas
-echo -e "\033[38;5;160m│           \033[38;5;227mDOWNLOAD EXTRA MENU\e[0m\033[38;5;160m            │\e[0m"
+echo -e "${c}│           ${g}PROCESS INSTALLED OHP${NC}${c}          │${NC}"
 lane_bawah
-'INSTALL_FEATURE' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_OHP'
 
 lane_atas
-echo -e "\033[38;5;160m│           \033[38;5;227mDOWNLOAD UDP CUSTOM\e[0m\033[38;5;160m            │\e[0m"
+echo -e "${c}│           ${g}DOWNLOAD EXTRA MENU${NC}${c}            │${NC}"
 lane_bawah
-'INSTALL_UDP_CUSTOM' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_FEATURE'
+
+lane_atas
+echo -e "${c}│           ${g}DOWNLOAD UDP CUSTOM${NC}${c}            │${NC}"
+lane_bawah
+animation_loading 'INSTALL_UDP_CUSTOM'
 
 }
 
 function UNTUK_UBUNTU(){
-# install toolss
-TOOLS_PKG
-
-clear
 lane_atas
-echo -e "\033[38;5;160m│      \033[38;5;227mPROCESS INSTALLED SSH & OPENVPN\e[0m     \033[38;5;160m│\e[0m"
+echo -e "${c}│      ${g}PROCESS INSTAKKED MODUL PACKAGE${NC}     ${c}│${NC}"
 lane_bawah
-'INSTALL_SSH' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'TOOLS_PKG'
 
 lane_atas
-echo -e "\033[38;5;160m│           \033[38;5;227mPROCESS INSTALLED XRAY\e[0m         \033[38;5;160m│\e[0m"
+echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
 lane_bawah
-'INSTALL_XRAY' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_SSH'
 
 lane_atas
-echo -e "\033[38;5;160m│       \033[38;5;227mPROCESS INSTALLED WEBSOCKET SSH\e[0m    \033[38;5;160m│\e[0m"
+echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
 lane_bawah
-'INSTALL_WEBSOCKET' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_XRAY'
 
 lane_atas
-echo -e "\033[38;5;160m│       \033[38;5;227mPROCESS INSTALLED BACKUP MENU\e[0m\033[38;5;160m      │\e[0m"
+echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
 lane_bawah
-'INSTALL_BACKUP' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_WEBSOCKET'
 
 lane_atas
-echo -e "\033[38;5;160m│           \033[38;5;227mPROCESS INSTALLED OHP\e[0m\033[38;5;160m          │\e[0m"
+echo -e "${c}│       ${g}PROCESS INSTALLED BACKUP MENU${NC}${c}      │${NC}"
 lane_bawah
-'INSTALL_OHP' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_BACKUP'
 
 lane_atas
-echo -e "\033[38;5;160m│           \033[38;5;227mDOWNLOAD EXTRA MENU\e[0m\033[38;5;160m            │\e[0m"
+echo -e "${c}│           ${g}PROCESS INSTALLED OHP${NC}${c}          │${NC}"
 lane_bawah
-'INSTALL_FEATURE' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_OHP'
 
 lane_atas
-echo -e "\033[38;5;160m│           \033[38;5;227mDOWNLOAD UDP CUSTOM\e[0m\033[38;5;160m            │\e[0m"
+echo -e "${c}│           ${g}DOWNLOAD EXTRA MENU${NC}${c}            │${NC}"
 lane_bawah
-'INSTALL_UDP_CUSTOM' >/dev/null 2>&1 & LOADING_ANIMATIONS $!
+animation_loading 'INSTALL_FEATURE'
+
+lane_atas
+echo -e "${c}│           ${g}DOWNLOAD UDP CUSTOM${NC}${c}            │${NC}"
+lane_bawah
+animation_loading 'INSTALL_UDP_CUSTOM'
 
 }
 
@@ -475,12 +451,12 @@ fi
 sysctl -p >/dev/null 2>&1
 
 function install_crond(){
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/install_cron.sh && chmod +x install_cron.sh && ./install_cron.sh
+wget https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/install_cron.sh && chmod +x install_cron.sh && ./install_cron.sh
 clear
 }
 
 
-INSTALL_SCRIPTS
+Installasi
 install_crond
 
 # install cron.d
@@ -502,7 +478,7 @@ if [ -f "/etc/afak.conf" ]; then
 rm /etc/afak.conf > /dev/null 2>&1
 fi
 history -c
-serverV=$( curl -sS https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/versi  )
+serverV=$( curl -sS https://raw.githubusercontent.com/ianlunatixxx/ubdeb10_20_/main/versi  )
 echo $serverV > /root/.versi
 echo "00" > /home/daily_reboot
 aureb=$(cat /home/daily_reboot)
@@ -557,9 +533,9 @@ rm -f key.pem
 rm -f cert.pem
 
 clear
-echo -e "\033[38;5;160m┌────────────────────────────────────────────┐\e[0m"
-echo -e "\033[38;5;160m│  \033[38;5;227mINSTALL SCRIPT SELESAI..\e[0m                  \033[38;5;160m│\e[0m"
-echo -e "\033[38;5;160m└────────────────────────────────────────────┘\e[0m"
+echo -e "${c}┌────────────────────────────────────────────┐${NC}"
+echo -e "${c}│  ${g}INSTALL SCRIPT SELESAI..${NC}                  ${c}│${NC}"
+echo -e "${c}└────────────────────────────────────────────┘${NC}"
 echo  ""
 echo -e "\e[92;1m dalam 3 detik akan Melakukan reboot.... \e[0m"
 
