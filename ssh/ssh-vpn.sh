@@ -1,7 +1,7 @@
 #!/bin/bash
 rm -f $0
 apt dist-upgrade -y
-apt install netfilter-persistent -y
+apt install iptables netfilter-persistent -y
 apt-get remove --purge ufw firewalld -y # matikan firewalld
 apt install -y screen bzip2 gzip vnstat coreutils rsyslog iftop zip unzip apt-transport-https build-essential -y
 REPO="https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/"
