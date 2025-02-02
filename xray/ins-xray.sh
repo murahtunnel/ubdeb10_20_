@@ -58,9 +58,9 @@ else
 domain=""
 fi
 sleep 0.5
-echo -e "[ ${green}INFO${NC} ] Checking... "
-apt install iptables iptables-persistent -y
-sleep 0.5
+#echo -e "[ ${green}INFO${NC} ] Checking... "
+#apt install iptables iptables-persistent -y
+#sleep 0.5
 echo -e "[ ${green}INFO$NC ] Setting ntpdate"
 ntpdate pool.ntp.org
 timedatectl set-ntp true
