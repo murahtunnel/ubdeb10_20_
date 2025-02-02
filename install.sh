@@ -231,7 +231,7 @@ animation_loading() {
 
 TOOLS_PKG() {
 cd
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh &> /dev/null
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh
 
 wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
 
@@ -326,10 +326,6 @@ fi
 }
 
 function UNTUK_DEBIAN(){
-lane_atas
-echo -e "${c}│      ${g}PROCESS INSTAKKED MODUL PACKAGE${NC}     ${c}│${NC}"
-lane_bawah
-animation_loading 'TOOLS_PKG'
 
 lane_atas
 echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
@@ -369,10 +365,6 @@ animation_loading 'INSTALL_UDP_CUSTOM'
 }
 
 function UNTUK_UBUNTU(){
-lane_atas
-echo -e "${c}│      ${g}PROCESS INSTAKKED MODUL PACKAGE${NC}     ${c}│${NC}"
-lane_bawah
-animation_loading 'TOOLS_PKG'
 
 lane_atas
 echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
@@ -456,6 +448,7 @@ clear
 }
 
 
+TOOLS_PKG
 Installasi
 install_crond
 
