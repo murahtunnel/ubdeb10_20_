@@ -228,21 +228,6 @@ animation_loading() {
     echo -e "\033[0;33m]\033[1;37m -\033[1;32m Succes !\033[1;37m"
     tput cnorm # Tampilkan kursor kembali
 }
-INSTALL_SSH() {
-
-# install at untuk meng kill triall ssh
-sudo apt install at -y >/dev/null 2>&1
-
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ssh/ssh-vpn.sh && chmod +x ssh-vpn.sh && ./ssh-vpn.sh
-
-# installer gotop
-gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
-gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/gotop_v"$gotop_latest"_linux_amd64.deb"
-curl -sL "$gotop_link" -o /tmp/gotop.deb
-dpkg -i /tmp/gotop.deb
-clear
-} 
-
 INSTALL_XRAY() {
 
 # install semua kebutuhan xray
@@ -312,10 +297,10 @@ fi
 
 function UNTUK_DEBIAN(){
 
-lane_atas
-echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
-lane_bawah
-animation_loading 'INSTALL_SSH'
+#lane_atas
+#echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
+#lane_bawah
+#animation_loading 'INSTALL_SSH'
 
 lane_atas
 echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
@@ -351,10 +336,10 @@ animation_loading 'INSTALL_UDP_CUSTOM'
 
 function UNTUK_UBUNTU(){
 
-lane_atas
-echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
-lane_bawah
-animation_loading 'INSTALL_SSH'
+#lane_atas
+#echo -e "${c}│      ${g}PROCESS INSTALLED SSH & OPENVPN${NC}     ${c}│${NC}"
+#lane_bawah
+#animation_loading 'INSTALL_SSH'
 
 lane_atas
 echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
@@ -435,6 +420,7 @@ clear
 
 clear
 
+# install tools.sh
 echo -e "\e[91;1m ================================ \e[0m"
 echo -e "\e[97;1m    INSTALLED PACKAGES MODULE   \e[0m"
 echo -e "\e[91;1m ================================ \e[0m"
@@ -448,6 +434,23 @@ ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 apt install git
 apt install python -y >/dev/null 2>&1
 
+clear
+echo -e "\e[91;1m ================================ \e[0m"
+echo -e "\e[97;1m   INSTALLED SSH-VPN.SH MODULE    \e[0m"
+echo -e "\e[91;1m ================================ \e[0m"
+# install vpn-ssh.sh
+sudo apt install at -y >/dev/null 2>&1
+
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ssh/ssh-vpn.sh && chmod +x ssh-vpn.sh && ./ssh-vpn.sh
+
+# installer gotop
+gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
+gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/gotop_v"$gotop_latest"_linux_amd64.deb"
+curl -sL "$gotop_link" -o /tmp/gotop.deb
+dpkg -i /tmp/gotop.deb
+clear
+
+# call function
 Installasi
 install_crond
 
