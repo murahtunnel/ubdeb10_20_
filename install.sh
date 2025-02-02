@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm -f $0
-
+clear
 apt update
 apt install curl -y
 apt install wget -y
@@ -80,6 +80,8 @@ checking_sc() {
 }
 checking_sc
 
+clear
+
 function ARCHITECTURE() {
 if [[ "$( uname -m | awk '{print $1}' )" == "x86_64" ]]; then
     echo -ne
@@ -133,6 +135,8 @@ fi
 # call
 ARCHITECTURE
 
+clear
+
 function MakeDirectories() {
     # Direktori utama
     local main_dirs=(
@@ -178,14 +182,15 @@ function MakeDirectories() {
 
 MakeDirectories
 
+clear
 
 function domain_setup(){
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/domains.sh && chmod +x domains.sh && ./domains.sh
 clear
 }
-
 domain_setup
 
+clear
 function Installasi(){
 animation_loading() {
     CMD[0]="$1"
@@ -204,11 +209,11 @@ animation_loading() {
     ) >/dev/null 2>&1 &
 
     tput civis # Sembunyikan kursor
-    echo -ne "  \033[0;33mProcessed Install \033[1;37m- \033[0;33m["
+    echo -ne "  \033[0;32mProcces\033[1;37m- \033[0;33m["
     
     while true; do
         for ((i = 0; i < 18; i++)); do
-            echo -ne "\033[0;32m#"
+            echo -ne "\033[97;1m#"
             sleep 0.1
         done
         
@@ -218,41 +223,20 @@ animation_loading() {
             break
         fi
         
-        echo -e "\033[0;33m]"
+        echo -e "\033[0;31m]"
         sleep 1
         tput cuu1 # Kembali ke baris sebelumnya
         tput dl1   # Hapus baris sebelumnya
-        echo -ne "  \033[0;33mProcessed Install \033[1;37m- \033[0;33m["
+        echo -ne "  \033[0;32mProcess\033[1;37m- \033[0;31m["
     done
     
-    echo -e "\033[0;33m]\033[1;37m -\033[1;32m Succes !\033[1;37m"
+    echo -e "\033[0;31m]\033[1;37m -\033[1;32m OK!\033[0m"
     tput cnorm # Tampilkan kursor kembali
-}
-INSTALL_XRAY() {
-
-# install semua kebutuhan xray
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/xray/ins-xray.sh && chmod +x ins-xray.sh && ./ins-xray.sh
-clear
-
-# limit quota & service xray
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/Xbw_LIMIT/install.sh && chmod +x install.sh && ./install.sh
-clear
-
-# limit service ip xray
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/AUTOKILL_SERVICE/service.sh && chmod +x service.sh && ./service.sh
-clear
-
 }
 
 INSTALL_WEBSOCKET() {
-
-# install-ws
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/install-ws.sh && chmod +x install-ws.sh && ./install-ws.sh
-clear
-
-# banner ssh
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/banner_ssh.sh && chmod +x banner_ssh.sh && ./banner_ssh.sh
-clear
 }
 
 INSTALL_BACKUP() {
@@ -271,24 +255,21 @@ rm -f /root/limit.sh
 
 INSTALL_OHP() {
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/ohp.sh && chmod +x ohp.sh && ./ohp.sh
-clear
 }
 
 INSTALL_FEATURE() {
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/menu/install_menu.sh && chmod +x install_menu.sh && ./install_menu.sh
-clear
 }
 
 INSTALL_UDP_CUSTOM() {
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/UDP.sh && chmod +x UDP.sh && ./UDP.sh
-clear
 }
 
 if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
-echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
+echo -e "\033[96;1mSETUP OS : $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')\e[0m"
 UNTUK_UBUNTU
 elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
-echo -e "${g}Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${NC}"
+echo -e "\033[96;1mSETUP OS : $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')\e[0m"
 UNTUK_DEBIAN
 else
 echo -e " Your OS Is Not Supported ( ${YELLOW}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${FONT} )"
@@ -302,10 +283,10 @@ function UNTUK_DEBIAN(){
 #lane_bawah
 #animation_loading 'INSTALL_SSH'
 
-lane_atas
-echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
-lane_bawah
-animation_loading 'INSTALL_XRAY'
+#lane_atas
+#echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
+#lane_bawah
+#animation_loading 'INSTALL_XRAY'
 
 lane_atas
 echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
@@ -341,10 +322,10 @@ function UNTUK_UBUNTU(){
 #lane_bawah
 #animation_loading 'INSTALL_SSH'
 
-lane_atas
-echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
-lane_bawah
-animation_loading 'INSTALL_XRAY'
+#lane_atas
+#echo -e "${c}│           ${g}PROCESS INSTALLED XRAY${NC}         ${c}│${NC}"
+#lane_bawah
+#animation_loading 'INSTALL_XRAY'
 
 lane_atas
 echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
@@ -448,6 +429,21 @@ gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | 
 gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/gotop_v"$gotop_latest"_linux_amd64.deb"
 curl -sL "$gotop_link" -o /tmp/gotop.deb
 dpkg -i /tmp/gotop.deb
+clear
+
+clear
+# install ins-xray.sh
+echo -e "\e[91;1m ================================ \e[0m"
+echo -e "\e[97;1m   INSTALLED INS-XRAY.SH MODULE   \e[0m"
+echo -e "\e[91;1m ================================ \e[0m"
+# install semua kebutuhan xray
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/xray/ins-xray.sh && chmod +x ins-xray.sh && ./ins-xray.sh
+clear
+# limit quota & service xray
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/Xbw_LIMIT/install.sh && chmod +x install.sh && ./install.sh
+clear
+# limit service ip xray
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/AUTOKILL_SERVICE/service.sh && chmod +x service.sh && ./service.sh
 clear
 
 # call function
