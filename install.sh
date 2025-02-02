@@ -243,7 +243,7 @@ INSTALL_BACKUP() {
 apt install rclone
 printf "q\n" | rclone config
 wget -O /root/.config/rclone/rclone.conf "https://github.com/murahtunnel/ubdeb10_20_/raw/main/rclone.conf"
-git clone  https://github.com/murahtunnel/wondershaper.git
+git clone https://github.com/murahtunnel/wondershaper.git
 cd wondershaper
 make install
 cd
