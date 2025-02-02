@@ -228,20 +228,6 @@ animation_loading() {
     echo -e "\033[0;33m]\033[1;37m -\033[1;32m Succes !\033[1;37m"
     tput cnorm # Tampilkan kursor kembali
 }
-
-TOOLS_PKG() {
-cd
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh
-
-wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
-
-clear
-start=$(date +%s)
-ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-apt install git curl -y >/dev/null 2>&1
-apt install python -y >/dev/null 2>&1
-}
-
 INSTALL_SSH() {
 
 # install at untuk meng kill triall ssh
@@ -447,7 +433,21 @@ clear
 }
 
 
-TOOLS_PKG
+clear
+
+echo -e "\e[91;1m ================================ \e[0m"
+echo -e "\e[97;1m    INSTALLED PACKAGES MODULE   \e[0m"
+echo -e "\e[91;1m ================================ \e[0m"
+cd
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh
+wget -q -O /etc/port.txt "https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/port.txt"
+
+clear
+start=$(date +%s)
+ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+apt install git
+apt install python -y >/dev/null 2>&1
+
 Installasi
 install_crond
 
