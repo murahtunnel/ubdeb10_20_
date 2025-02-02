@@ -469,7 +469,9 @@ clear
 
 
 # install tools.sh
-wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh > /dev/null 2>&1
+
+echo -e "\e[92;1m install tools \e[0m"
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/PACKAGES/tools.sh && chmod +x tools.sh && ./tools.sh
 
 INSTALL
 install_crond
