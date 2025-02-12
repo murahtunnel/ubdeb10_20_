@@ -255,20 +255,20 @@ function UNTUK_DEBIAN(){
 #lane_bawah
 #animation_loading 'INSTALL_XRAY'
 
-lane_atas
-echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
-lane_bawah
-animation_loading 'INSTALL_WEBSOCKET'
+#lane_atas
+#echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
+#lane_bawah
+#animation_loading 'INSTALL_WEBSOCKET'
 
 lane_atas
 echo -e "${c}│       ${g}PROCESS INSTALLED BACKUP MENU${NC}${c}      │${NC}"
 lane_bawah
 animation_loading 'INSTALL_BACKUP'
 
-lane_atas
-echo -e "${c}│           ${g}PROCESS INSTALLED OHP${NC}${c}          │${NC}"
-lane_bawah
-animation_loading 'INSTALL_OHP'
+#lane_atas
+#echo -e "${c}│           ${g}PROCESS INSTALLED OHP${NC}${c}          │${NC}"
+#lane_bawah
+#animation_loading 'INSTALL_OHP'
 
 lane_atas
 echo -e "${c}│           ${g}DOWNLOAD EXTRA MENU${NC}${c}            │${NC}"
@@ -294,20 +294,20 @@ function UNTUK_UBUNTU(){
 #lane_bawah
 #animation_loading 'INSTALL_XRAY'
 
-lane_atas
-echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
-lane_bawah
-animation_loading 'INSTALL_WEBSOCKET'
+#lane_atas
+#echo -e "${c}│       ${g}PROCESS INSTALLED WEBSOCKET SSH${NC}    ${c}│${NC}"
+#lane_bawah
+#animation_loading 'INSTALL_WEBSOCKET'
 
 lane_atas
 echo -e "${c}│       ${g}PROCESS INSTALLED BACKUP MENU${NC}${c}      │${NC}"
 lane_bawah
 animation_loading 'INSTALL_BACKUP'
 
-lane_atas
-echo -e "${c}│           ${g}PROCESS INSTALLED OHP${NC}${c}          │${NC}"
-lane_bawah
-animation_loading 'INSTALL_OHP'
+#lane_atas
+#echo -e "${c}│           ${g}PROCESS INSTALLED OHP${NC}${c}          │${NC}"
+#lane_bawah
+#animation_loading 'INSTALL_OHP'
 
 lane_atas
 echo -e "${c}│           ${g}DOWNLOAD EXTRA MENU${NC}${c}            │${NC}"
@@ -397,8 +397,6 @@ gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/
 curl -sL "$gotop_link" -o /tmp/gotop.deb
 dpkg -i /tmp/gotop.deb
 clear
-
-clear
 # install ins-xray.sh
 echo -e "\e[91;1m ================================ \e[0m"
 echo -e "\e[97;1m   INSTALLED INS-XRAY.SH MODULE   \e[0m"
@@ -412,7 +410,15 @@ clear
 # limit service ip xray
 wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/AUTOKILL_SERVICE/service.sh && chmod +x service.sh && ./service.sh
 clear
-
+# install ws 
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/install-ws.sh && chmod +x install-ws.sh && ./install-ws.sh
+clear
+# install banner
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/banner_ssh.sh && chmod +x banner_ssh.sh && ./banner_ssh.sh
+clear
+# install ohp
+wget https://raw.githubusercontent.com/murahtunnel/ubdeb10_20_/main/ws/ohp.sh && chmod +x ohp.sh && ./ohp.sh
+clear
 # call function
 Installasi
 install_crond
@@ -469,9 +475,6 @@ TEXT="
 <b>Client  :</b> <code>$client</code>
 <b>ISP     :</b> <code>$ISP</code>
 <b>Country :</b> <code>$CITY</code>
-<b>DATE    :</b> <code>$date</code>
-<b>Time    :</b> <code>$time</code>
-<b>Expired :</b> <code>$exp</code>
 <code>= = = = = = = = = = = = =</code>
 <b>        LUNATIC TUNNELING     </b>
 <code>= = = = = = = = = = = = =</code>"
